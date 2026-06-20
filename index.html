@@ -9,7 +9,7 @@
   <!-- Google Fonts: Space Grotesk (headings) and Inter (body) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Orbitron:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body class="loading">
@@ -629,47 +629,39 @@
               </div>
             </div>
 
-            <!-- Skills bars -->
+            <!-- Interactive 3D Skill Graph -->
             <div class="skills-container">
               <h3>Core Technical Capabilities</h3>
               
-              <div class="skill-bar-wrapper">
-                <div class="skill-info">
-                  <span class="skill-name">Frontend Architecture (HTML5, JS, React/Next)</span>
-                  <span class="skill-percent">95%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" data-progress="95%"></div>
-                </div>
-              </div>
-
-              <div class="skill-bar-wrapper">
-                <div class="skill-info">
-                  <span class="skill-name">Creative UI/UX &amp; Vector Styling</span>
-                  <span class="skill-percent">90%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" data-progress="90%"></div>
+              <!-- 3D Canvas container with telemetry grids -->
+              <div class="skills-canvas-container">
+                <canvas id="skills-canvas"></canvas>
+                <div class="skills-grid-decor">
+                  <span class="decor-corner tl"></span>
+                  <span class="decor-corner tr"></span>
+                  <span class="decor-corner bl"></span>
+                  <span class="decor-corner br"></span>
                 </div>
               </div>
-
-              <div class="skill-bar-wrapper">
-                <div class="skill-info">
-                  <span class="skill-name">Backend &amp; Node Systems Engineering</span>
-                  <span class="skill-percent">88%</span>
+              
+              <!-- Telemetry description HUD for selected node -->
+              <div id="skill-hud-panel" class="glass-panel">
+                <div class="hud-header">
+                  <span class="hud-status-light"></span>
+                  <span class="hud-title">NOVA_NEURAL_MAP // TELEMETRY</span>
                 </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" data-progress="88%"></div>
+                <div class="hud-body">
+                  <div class="hud-main">
+                    <span class="hud-decryption-text" id="hud-skill-name">SYSTEM READY</span>
+                    <span class="hud-sub-label" id="hud-skill-category">HOVER/TAP NODE TO DECRYPT MODULES</span>
+                  </div>
+                  <div class="hud-stat-box">
+                    <span class="hud-stat-label">SYNC</span>
+                    <span class="hud-stat-val" id="hud-skill-percent">--%</span>
+                  </div>
                 </div>
-              </div>
-
-              <div class="skill-bar-wrapper">
-                <div class="skill-info">
-                  <span class="skill-name">Canvas WebGL &amp; VFX Animation</span>
-                  <span class="skill-percent">85%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" data-progress="85%"></div>
+                <div class="hud-footer">
+                  <p id="hud-skill-desc">Hover or drag to rotate the neural map. Hover or click an interactive node to establish a high-priority data synch link and retrieve module logs.</p>
                 </div>
               </div>
             </div>

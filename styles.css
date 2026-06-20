@@ -2,14 +2,14 @@
    DESIGN TOKENS & ROOT VARIABLES
    ========================================================================== */
 :root {
-  --font-heading: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-heading: 'Orbitron', 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
   /* Sleek, tailored dark HSL color palette */
-  --bg-dark: hsl(240, 36%, 4%);
-  --bg-darker: hsl(240, 40%, 2%);
-  --bg-panel: hsla(240, 30%, 8%, 0.4);
-  --bg-panel-hover: hsla(240, 30%, 12%, 0.6);
+  --bg-dark: #000000;
+  --bg-darker: #000000;
+  --bg-panel: rgba(6, 6, 12, 0.85);
+  --bg-panel-hover: rgba(12, 12, 24, 0.9);
   
   /* Vibrant accent colors */
   --color-primary: hsl(182, 100%, 50%);    /* Cyber Cyan */
@@ -115,25 +115,30 @@ strong {
    ========================================================================== */
 h1, h2, h3, h4 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: 900;
+  line-height: 1.25;
   color: var(--text-light);
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 10px rgba(0, 242, 254, 0.15), 0 0 20px rgba(127, 0, 255, 0.1);
 }
 
 h1 {
-  font-size: clamp(2.5rem, 6vw, 4.5rem);
-  letter-spacing: -0.03em;
+  font-size: clamp(2.3rem, 5.5vw, 4.2rem);
+  letter-spacing: 0.04em;
   margin-bottom: 1.5rem;
+  text-transform: uppercase;
 }
 
 h2 {
-  font-size: clamp(2rem, 4vw, 3rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(1.8rem, 3.8vw, 2.8rem);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin-bottom: 1rem;
+  letter-spacing: 0.08em;
 }
 
 /* ==========================================================================
@@ -361,7 +366,7 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at center, transparent 20%, rgba(6, 6, 12, 0.75) 100%);
+  background: radial-gradient(circle at center, transparent 20%, rgba(0, 0, 0, 0.9) 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -386,7 +391,7 @@ h3 {
 }
 
 #main-header.scrolled {
-  background: hsla(240, 36%, 4%, 0.7);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border-light);
@@ -876,7 +881,7 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(8, 8, 17, 0.95);
+  background: rgba(6, 6, 12, 0.95);
   backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
@@ -1063,47 +1068,193 @@ h3 {
   height: 100%;
 }
 
-/* Skills progress bars */
+/* Interactive 3D Skills Graph styles */
 .skills-container h3 {
   font-size: 1.25rem;
   margin-bottom: 1.5rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
 }
 
-.skill-bar-wrapper {
+.skills-canvas-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
   margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+  transition: var(--transition-smooth);
 }
 
-.skill-info {
+.skills-canvas-container:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-panel-hover);
+}
+
+#skills-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+}
+
+#skills-canvas:active {
+  cursor: grabbing;
+}
+
+/* Grids / Target Corner Decors for Skills Canvas */
+.skills-grid-decor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: 
+    linear-gradient(rgba(0, 242, 254, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 242, 254, 0.02) 1px, transparent 1px);
+  background-size: 25px 25px;
+  background-position: center;
+}
+
+.decor-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid var(--color-primary);
+  opacity: 0.6;
+}
+
+.decor-corner.tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.decor-corner.tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+.decor-corner.bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+.decor-corner.br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+/* Telemetry HUD Panel */
+#skill-hud-panel {
+  padding: 1.25rem 1.5rem;
+  border-radius: var(--border-radius-md);
+  background: rgba(6, 6, 12, 0.85);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-light);
+  transition: var(--transition-smooth);
+}
+
+#skill-hud-panel.active {
+  border-color: var(--border-hover);
+  box-shadow: var(--glow-secondary);
+}
+
+.hud-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.4rem;
+}
+
+.hud-status-light {
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-success);
+}
+
+.hud-status-light.syncing {
+  background-color: var(--color-primary);
+  box-shadow: 0 0 8px var(--color-primary);
+  animation: hudPulse 1.2s infinite;
+}
+
+@keyframes hudPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+.hud-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hud-body {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.hud-main {
+  display: flex;
+  flex-direction: column;
+}
+
+#hud-skill-name {
   font-family: var(--font-heading);
-  font-weight: 550;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-light);
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
-.skill-name {
-  color: var(--text-secondary);
+#hud-skill-category {
+  font-family: var(--font-heading);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  color: var(--color-secondary);
+  text-transform: uppercase;
+  margin-top: 0.15rem;
+  font-weight: 600;
 }
 
-.skill-percent {
+.hud-stat-box {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--border-radius-sm);
+  padding: 0.35rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60px;
+}
+
+.hud-stat-label {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.hud-stat-val {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
   color: var(--color-primary);
 }
 
-.skill-bar {
-  width: 100%;
-  height: 6px;
-  background: hsla(240, 20%, 30%, 0.2);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.skill-fill {
-  width: 0%;
-  height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
-  border-radius: 3px;
-  transition: width 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+.hud-footer {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  border-top: 1px dashed rgba(255, 255, 255, 0.05);
+  padding-top: 0.6rem;
 }
 
 /* ==========================================================================
@@ -1331,7 +1482,7 @@ h3 {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(4, 4, 8, 0.8);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   z-index: 2000;
@@ -1688,7 +1839,7 @@ h3 {
 #loader-terminal {
   width: 90%;
   max-width: 440px;
-  background: rgba(4, 4, 8, 0.85);
+  background: rgba(6, 6, 12, 0.85);
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-md);
   margin-top: 1.5rem;
@@ -1702,7 +1853,7 @@ h3 {
 }
 
 .terminal-header {
-  background: rgba(12, 12, 24, 0.95);
+  background: rgba(16, 16, 20, 0.95);
   padding: 0.5rem 1rem;
   display: flex;
   align-items: center;
@@ -1858,7 +2009,7 @@ h1, h2, h3, h4 {
   font-family: monospace;
   font-size: 0.78rem;
   color: var(--color-primary);
-  background: rgba(4, 4, 8, 0.85);
+  background: rgba(6, 6, 12, 0.85);
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-md);
   padding: 1rem 1.5rem;
