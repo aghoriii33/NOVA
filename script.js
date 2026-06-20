@@ -505,12 +505,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const vfxCanvas = document.getElementById('vfx-canvas');
   const vfxCtx = vfxCanvas.getContext('2d');
 
+  // Detect mobile — disable heavy VFX to hit 120Hz
+  const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent) || window.innerWidth < 768;
+
   function resizeVfxCanvas() {
-    vfxCanvas.width = window.innerWidth;
-    vfxCanvas.height = window.innerHeight;
+    // On mobile use 0.5x pixel ratio to cut GPU work in half
+    const dpr = isMobile ? Math.min(window.devicePixelRatio || 1, 1) : Math.min(window.devicePixelRatio || 1, 2);
+    vfxCanvas.width  = Math.floor(window.innerWidth  * dpr);
+    vfxCanvas.height = Math.floor(window.innerHeight * dpr);
+    vfxCanvas.style.width  = window.innerWidth  + 'px';
+    vfxCanvas.style.height = window.innerHeight + 'px';
+    vfxCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
   resizeVfxCanvas();
-  window.addEventListener('resize', resizeVfxCanvas);
+  window.addEventListener('resize', resizeVfxCanvas, { passive: true });
 
   // Projection math
   const fov = 450;
@@ -696,7 +704,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const warpParticles = [];
-  const totalWarpParticles = 60;
+  const totalWarpParticles = isMobile ? 18 : 60; // half particles on mobile
   for (let i = 0; i < totalWarpParticles; i++) {
     warpParticles.push(new WarpParticle());
   }
@@ -878,7 +886,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const codeStreams = [];
-  const totalStreams = 35; // Increased code stream density
+  const totalStreams = isMobile ? 8 : 35; // cut streams on mobile for smooth 120Hz
   for (let i = 0; i < totalStreams; i++) {
     codeStreams.push(new CodeStream3D());
   }
@@ -1031,49 +1039,52 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.restore();
   }
 
-  // Unified VFX Render loop
-  function loopVfx() {
-    const w = vfxCanvas.width;
-    const h = vfxCanvas.height;
+  // Unified VFX Render loop — optimized for 120Hz on mobile
+  // On mobile skip heavy 3D crystals/rings/codestreams; keep starfield only
+  let vfxLastFrame = 0;
+  function loopVfx(ts) {
+    requestAnimationFrame(loopVfx);
 
-    // 1. Draw Backdrop Nebulas & Volumetric Rays
-    drawNebulaBackdrop(vfxCtx, w, h, performance.now());
+    // On low-end mobile cap at 60fps to prevent thermal throttle
+    if (isMobile && ts - vfxLastFrame < 14) return; // ~72fps gate
+    vfxLastFrame = ts;
 
-    // 2. Interpolate Camera Rotation based on Mouse
-    updateCamRotationPhysics();
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-    // 3. Update & Draw 3D Code Streams
+    // 1. Draw Backdrop Nebulas (simplified on mobile)
+    if (isMobile) {
+      vfxCtx.fillStyle = '#020205';
+      vfxCtx.fillRect(0, 0, w, h);
+    } else {
+      drawNebulaBackdrop(vfxCtx, w, h, ts);
+    }
+
+    // 2. Camera physics (skip on mobile — no mouse tracking on touch)
+    if (!isMobile) updateCamRotationPhysics();
+
+    // 3. Code Streams
     codeStreams.forEach(stream => {
       stream.update();
       stream.draw(vfxCtx, w, h, camPitch, camYaw);
     });
 
-    // 4. Update & Draw Warp Particles
+    // 4. Warp Particles — always drawn
     warpParticles.forEach(p => {
       p.update();
       p.draw(vfxCtx, w, h, camPitch, camYaw);
     });
 
-    // 5. Update & Draw Concentric Rings
-    portalRings.forEach(ring => {
-      ring.update();
-      ring.draw(vfxCtx, w, h, camPitch, camYaw);
-    });
-
-    // 6. Update & Draw Floating Crystals
-    cuboids.forEach(cube => {
-      cube.update();
-      cube.draw(vfxCtx, w, h, camPitch, camYaw);
-    });
-
-    // 7. Draw 3D Neural Web connections (Reference 2 style)
-    drawNeuralWebLinks(vfxCtx, w, h, camPitch, camYaw);
-
-    requestAnimationFrame(loopVfx);
+    // 5–7. Heavy 3D: desktop only
+    if (!isMobile) {
+      portalRings.forEach(ring => { ring.update(); ring.draw(vfxCtx, w, h, camPitch, camYaw); });
+      cuboids.forEach(cube => { cube.update(); cube.draw(vfxCtx, w, h, camPitch, camYaw); });
+      drawNeuralWebLinks(vfxCtx, w, h, camPitch, camYaw);
+    }
   }
 
   // Launch VFX Loop
-  loopVfx();
+  requestAnimationFrame(loopVfx);
 
 
   /* ==========================================================================
@@ -1881,7 +1892,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // Email validation regex check
+    // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       formStatus.classList.add('error');
@@ -1893,18 +1904,34 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.classList.add('submitting');
     submitBtn.disabled = true;
 
-    // Simulate server ingestion (1.5 seconds)
-    setTimeout(() => {
+    // Send via Formspree (real email delivery — free, no backend needed)
+    fetch('https://formspree.io/f/mjkwgkwb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ name, email, subject, message })
+    })
+    .then(res => {
       submitBtn.classList.remove('submitting');
       submitBtn.disabled = false;
-
-      // Display success message
+      if (res.ok) {
+        formStatus.classList.add('success');
+        formStatus.innerHTML = `Message sent! Thank you, <strong>${name}</strong>. We'll reply to <strong>${email}</strong> shortly.`;
+        contactForm.reset();
+      } else {
+        // Fallback: open mailto if Formspree fails
+        throw new Error('formspree_fail');
+      }
+    })
+    .catch(() => {
+      submitBtn.classList.remove('submitting');
+      submitBtn.disabled = false;
+      // Mailto fallback — opens user's email client pre-filled
+      const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+      const mailtoLink = `mailto:kundurick781@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+      window.location.href = mailtoLink;
       formStatus.classList.add('success');
-      formStatus.innerHTML = `Thank you, <strong>${name}</strong>! Your message was submitted successfully. We will email you back shortly.`;
-
-      // Reset form
-      contactForm.reset();
-    }, 1500);
+      formStatus.textContent = 'Opening your email client to send the message...';
+    });
   });
 
   // Auto-update copyright year in footer
@@ -1914,10 +1941,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     3. ASSASSIN'S CREED THEMED FIREBASE AUTHENTICATION SYSTEM
+     3. ASSASSIN'S CREED THEMED AUTH SYSTEM
+     Works immediately with localStorage. Upgrade to Firebase by pasting your
+     firebaseConfig below — the switch is automatic.
      ========================================================================== */
-  
-  // REPLACE this with your actual Firebase config from the Firebase Console!
+
+  // ── Optional Firebase config ────────────────────────────────────────────────
+  // Paste your real values here from https://console.firebase.google.com/
   const firebaseConfig = {
     apiKey: "YOUR_API_KEY_HERE",
     authDomain: "YOUR_PROJECT_ID_HERE.firebaseapp.com",
@@ -1927,268 +1957,79 @@ document.addEventListener('DOMContentLoaded', () => {
     appId: "YOUR_APP_ID_HERE"
   };
 
-  // Initialize Firebase (only if config is filled and firebase is available)
   let auth = null;
   const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
 
-  if (typeof firebase !== 'undefined') {
+  if (typeof firebase !== 'undefined' && isFirebaseConfigured) {
     try {
-      if (isFirebaseConfigured) {
-        firebase.initializeApp(firebaseConfig);
-        auth = firebase.auth();
-      } else {
-        console.warn("Firebase Auth: Please configure your firebaseConfig credentials in script.js to enable the login system.");
-      }
-    } catch (err) {
-      console.error("Firebase initialization failed:", err);
-    }
-  }
-
-  // Auth UI Elements
-  const authModal = document.getElementById('auth-modal');
-  const authLoginBtn = document.getElementById('auth-login-btn');
-  const authProfile = document.getElementById('auth-profile');
-  const userAvatar = document.getElementById('user-avatar');
-  const userName = document.getElementById('user-name');
-  const authLogoutBtn = document.getElementById('auth-logout-btn');
-  const authModalClose = document.getElementById('auth-modal-close');
-  const authTabs = document.querySelectorAll('.auth-tab-btn');
-  const signinForm = document.getElementById('signin-form');
-  const signupForm = document.getElementById('signup-form');
-  const googleSigninBtn = document.getElementById('google-signin-btn');
-  const authMessage = document.getElementById('auth-message');
-
-  // Helper to show messages inside the modal
-  function showAuthMessage(msg, type = 'error') {
-    if (authMessage) {
-      authMessage.textContent = msg;
-      authMessage.className = 'auth-message ' + type;
-      authMessage.style.display = 'block';
-    }
-  }
-
-  function clearAuthMessage() {
-    if (authMessage) {
-      authMessage.textContent = '';
-      authMessage.style.display = 'none';
-    }
-  }
-
-  // Check if Firebase is available
-  function checkFirebase() {
-    if (typeof firebase === 'undefined') {
-      showAuthMessage("Firebase SDK failed to load. Check your internet connection.");
-      return false;
-    }
-    if (!isFirebaseConfigured) {
-      showAuthMessage("Authentication requires setup. Please update firebaseConfig in script.js.");
-      return false;
-    }
-    if (!auth) {
+      firebase.initializeApp(firebaseConfig);
       auth = firebase.auth();
-    }
-    return true;
+    } catch (err) { /* already initialized */ }
   }
 
-  // Open Modal — always open, Firebase check only happens on submit
-  if (authLoginBtn) {
-    authLoginBtn.addEventListener('click', () => {
-      clearAuthMessage();
-      if (authModal) {
-        authModal.classList.add('open');
-      }
-      document.body.style.overflow = 'hidden';
+  // ── localStorage fallback (works without Firebase) ──────────────────────────
+  const LOCAL_USERS_KEY = 'nova_users_db';
+  const LOCAL_SESSION_KEY = 'nova_current_user';
 
-      // If Firebase isn't configured, show a friendly notice inside the modal
-      if (!isFirebaseConfigured) {
-        setTimeout(() => {
-          showAuthMessage("⚠️ Firebase not configured. Paste your firebaseConfig into script.js to enable login.", "error");
-        }, 100);
-      }
-    });
+  function getLocalUsers() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_USERS_KEY) || '{}'); } catch { return {}; }
+  }
+  function saveLocalUsers(users) {
+    localStorage.setItem(LOCAL_USERS_KEY, JSON.stringify(users));
+  }
+  function getLocalSession() {
+    try { return JSON.parse(localStorage.getItem(LOCAL_SESSION_KEY) || 'null'); } catch { return null; }
+  }
+  function saveLocalSession(user) {
+    localStorage.setItem(LOCAL_SESSION_KEY, JSON.stringify(user));
+  }
+  function clearLocalSession() {
+    localStorage.removeItem(LOCAL_SESSION_KEY);
+  }
+  function hashPassword(str) {
+    // Simple deterministic hash (not cryptographic — for demo only)
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) { hash = ((hash << 5) - hash) + str.charCodeAt(i); hash |= 0; }
+    return hash.toString(36);
   }
 
-  // Close Modal
-  if (authModalClose) {
-    authModalClose.addEventListener('click', () => {
-      if (authModal) {
-        authModal.classList.remove('open');
-      }
-      document.body.style.overflow = ''; // Unlock scrolling
-    });
+  // ── Auth UI Elements ─────────────────────────────────────────────────────────
+  const authModal       = document.getElementById('auth-modal');
+  const authLoginBtn    = document.getElementById('auth-login-btn');
+  const authProfile     = document.getElementById('auth-profile');
+  const userAvatar      = document.getElementById('user-avatar');
+  const userName        = document.getElementById('user-name');
+  const authLogoutBtn   = document.getElementById('auth-logout-btn');
+  const authModalClose  = document.getElementById('auth-modal-close');
+  const authTabs        = document.querySelectorAll('.auth-tab-btn');
+  const signinForm      = document.getElementById('signin-form');
+  const signupForm      = document.getElementById('signup-form');
+  const googleSigninBtn = document.getElementById('google-signin-btn');
+  const authMessage     = document.getElementById('auth-message');
+
+  function showAuthMessage(msg, type = 'error') {
+    if (!authMessage) return;
+    authMessage.textContent = msg;
+    authMessage.className = 'auth-message ' + type;
+    authMessage.style.display = 'block';
+  }
+  function clearAuthMessage() {
+    if (!authMessage) return;
+    authMessage.textContent = '';
+    authMessage.style.display = 'none';
   }
 
-  // Close modal when clicking outside content
-  if (authModal) {
-    authModal.addEventListener('click', (e) => {
-      if (e.target === authModal) {
-        authModal.classList.remove('open');
-        document.body.style.overflow = '';
-      }
-    });
-  }
-
-  // Switch Tabs (Sign In / Register)
-  authTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      authTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      clearAuthMessage();
-
-      const activeTab = tab.getAttribute('data-tab');
-      if (activeTab === 'signin') {
-        if (signinForm) signinForm.style.display = 'flex';
-        if (signupForm) signupForm.style.display = 'none';
-      } else {
-        if (signinForm) signinForm.style.display = 'none';
-        if (signupForm) signupForm.style.display = 'flex';
-      }
-    });
-  });
-
-  // Handle Email & Password Sign In
-  if (signinForm) {
-    signinForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      clearAuthMessage();
-      if (!checkFirebase()) return;
-
-      const email = document.getElementById('signin-email').value;
-      const password = document.getElementById('signin-password').value;
-
-      const submitBtn = signinForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn ? submitBtn.textContent : "Sign In";
-      if (submitBtn) {
-        submitBtn.textContent = "Signing In...";
-        submitBtn.disabled = true;
-      }
-
-      auth.signInWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          showAuthMessage("Sign in successful!", "success");
-          setTimeout(() => {
-            if (authModal) authModal.classList.remove('open');
-            document.body.style.overflow = '';
-            signinForm.reset();
-          }, 1000);
-        })
-        .catch((error) => {
-          showAuthMessage(error.message);
-        })
-        .finally(() => {
-          if (submitBtn) {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-          }
-        });
-    });
-  }
-
-  // Handle Email & Password Register (Sign Up)
-  if (signupForm) {
-    signupForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      clearAuthMessage();
-      if (!checkFirebase()) return;
-
-      const nameVal = document.getElementById('signup-name').value;
-      const email = document.getElementById('signup-email').value;
-      const password = document.getElementById('signup-password').value;
-
-      const submitBtn = signupForm.querySelector('button[type="submit"]');
-      const originalText = submitBtn ? submitBtn.textContent : "Create Account";
-      if (submitBtn) {
-        submitBtn.textContent = "Creating...";
-        submitBtn.disabled = true;
-      }
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          // Update profile display name
-          return user.updateProfile({
-            displayName: nameVal
-          }).then(() => {
-            // Force state update to refresh UI immediately
-            updateAuthUI(user);
-            showAuthMessage("Account created successfully!", "success");
-            setTimeout(() => {
-              if (authModal) authModal.classList.remove('open');
-              document.body.style.overflow = '';
-              signupForm.reset();
-            }, 1000);
-          });
-        })
-        .catch((error) => {
-          showAuthMessage(error.message);
-        })
-        .finally(() => {
-          if (submitBtn) {
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-          }
-        });
-    });
-  }
-
-  // Handle Google Sign In
-  if (googleSigninBtn) {
-    googleSigninBtn.addEventListener('click', () => {
-      clearAuthMessage();
-      if (!checkFirebase()) return;
-
-      const provider = new firebase.auth.GoogleAuthProvider();
-      auth.signInWithPopup(provider)
-        .then((result) => {
-          showAuthMessage("Google Login successful!", "success");
-          setTimeout(() => {
-            if (authModal) authModal.classList.remove('open');
-            document.body.style.overflow = '';
-          }, 1000);
-        })
-        .catch((error) => {
-          showAuthMessage(error.message);
-        });
-    });
-  }
-
-  // Handle Logout
-  if (authLogoutBtn) {
-    authLogoutBtn.addEventListener('click', () => {
-      if (!checkFirebase()) return;
-      auth.signOut()
-        .then(() => {
-          console.log("Logged out successfully");
-        })
-        .catch((error) => {
-          console.error("Logout failed:", error);
-        });
-    });
-  }
-
-  // Dynamic UI updates based on Auth State
+  // ── updateAuthUI: show/hide profile and login button ────────────────────────
   function updateAuthUI(user) {
     if (user) {
-      // User is signed in
       if (authLoginBtn) authLoginBtn.style.display = 'none';
       if (authProfile) authProfile.style.display = 'flex';
-
-      // Set user name
-      if (userName) {
-        userName.textContent = user.displayName || user.email.split('@')[0];
-      }
-
-      // Set user avatar. If no photoURL is available, use a premium default avatar
+      if (userName) userName.textContent = user.displayName || (user.email ? user.email.split('@')[0] : 'Assassin');
       if (userAvatar) {
-        if (user.photoURL) {
-          userAvatar.src = user.photoURL;
-        } else {
-          // A premium gold/black placeholder avatar using inline SVG data URI
-          userAvatar.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="%2307070a" stroke="%23d4af37" stroke-width="2"/><circle cx="50" cy="38" r="18" fill="%23d4af37"/><path d="M22 78 C25 60, 38 52, 50 52 C62 52, 75 60, 78 78 Z" fill="%23d4af37"/></svg>';
-        }
+        userAvatar.src = user.photoURL ||
+          'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="%2307070a" stroke="%23d4af37" stroke-width="2"/><circle cx="50" cy="38" r="18" fill="%23d4af37"/><path d="M22 78 C25 60,38 52,50 52 C62 52,75 60,78 78 Z" fill="%23d4af37"/></svg>';
       }
     } else {
-      // User is signed out
       if (authLoginBtn) authLoginBtn.style.display = 'inline-block';
       if (authProfile) authProfile.style.display = 'none';
       if (userName) userName.textContent = '';
@@ -2196,14 +2037,150 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Listen for Auth State changes
-  if (typeof firebase !== 'undefined' && isFirebaseConfigured) {
-    try {
-      firebase.auth().onAuthStateChanged((user) => {
-        updateAuthUI(user);
-      });
-    } catch (e) {
-      console.error("Auth state listener setup failed:", e);
-    }
+  // ── On page load: restore session ───────────────────────────────────────────
+  if (isFirebaseConfigured && auth) {
+    auth.onAuthStateChanged(user => updateAuthUI(user));
+  } else {
+    // Restore localStorage session
+    const savedUser = getLocalSession();
+    updateAuthUI(savedUser);
+  }
+
+  // ── Open Modal ───────────────────────────────────────────────────────────────
+  if (authLoginBtn) {
+    authLoginBtn.addEventListener('click', () => {
+      clearAuthMessage();
+      if (authModal) authModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+  }
+
+  // ── Close Modal ──────────────────────────────────────────────────────────────
+  function closeAuthModal() {
+    if (authModal) authModal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  if (authModalClose) authModalClose.addEventListener('click', closeAuthModal);
+  if (authModal) {
+    authModal.addEventListener('click', e => { if (e.target === authModal) closeAuthModal(); });
+  }
+
+  // ── Tab Switching ────────────────────────────────────────────────────────────
+  authTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      authTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      clearAuthMessage();
+      const active = tab.getAttribute('data-tab');
+      if (signinForm) signinForm.style.display = active === 'signin' ? 'flex' : 'none';
+      if (signupForm) signupForm.style.display = active === 'signup' ? 'flex' : 'none';
+    });
+  });
+
+  // ── SIGN IN ──────────────────────────────────────────────────────────────────
+  if (signinForm) {
+    signinForm.addEventListener('submit', e => {
+      e.preventDefault();
+      clearAuthMessage();
+      const email    = document.getElementById('signin-email').value.trim();
+      const password = document.getElementById('signin-password').value;
+      const btn      = signinForm.querySelector('button[type="submit"]');
+      const orig     = btn ? btn.textContent : 'Sign In';
+      if (btn) { btn.textContent = 'Signing In…'; btn.disabled = true; }
+
+      if (isFirebaseConfigured && auth) {
+        // Firebase path
+        auth.signInWithEmailAndPassword(email, password)
+          .then(() => { showAuthMessage('Signed in!', 'success'); setTimeout(closeAuthModal, 900); signinForm.reset(); })
+          .catch(err => showAuthMessage(err.message))
+          .finally(() => { if (btn) { btn.textContent = orig; btn.disabled = false; } });
+      } else {
+        // localStorage path
+        setTimeout(() => {
+          const users = getLocalUsers();
+          const key   = email.toLowerCase();
+          if (!users[key]) { showAuthMessage('No account found. Please register first.'); if (btn) { btn.textContent = orig; btn.disabled = false; } return; }
+          if (users[key].passwordHash !== hashPassword(password)) { showAuthMessage('Incorrect password.'); if (btn) { btn.textContent = orig; btn.disabled = false; } return; }
+          const user = users[key];
+          saveLocalSession(user);
+          updateAuthUI(user);
+          showAuthMessage('Welcome back, ' + (user.displayName || email.split('@')[0]) + '!', 'success');
+          setTimeout(() => { closeAuthModal(); signinForm.reset(); }, 1000);
+          if (btn) { btn.textContent = orig; btn.disabled = false; }
+        }, 500);
+      }
+    });
+  }
+
+  // ── REGISTER ─────────────────────────────────────────────────────────────────
+  if (signupForm) {
+    signupForm.addEventListener('submit', e => {
+      e.preventDefault();
+      clearAuthMessage();
+      const nameVal  = document.getElementById('signup-name').value.trim();
+      const email    = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const btn      = signupForm.querySelector('button[type="submit"]');
+      const orig     = btn ? btn.textContent : 'Create Account';
+      if (btn) { btn.textContent = 'Creating…'; btn.disabled = true; }
+
+      if (password.length < 6) { showAuthMessage('Password must be at least 6 characters.'); if (btn) { btn.textContent = orig; btn.disabled = false; } return; }
+
+      if (isFirebaseConfigured && auth) {
+        // Firebase path
+        auth.createUserWithEmailAndPassword(email, password)
+          .then(cred => cred.user.updateProfile({ displayName: nameVal }).then(() => {
+            const u = { displayName: nameVal, email, photoURL: null };
+            updateAuthUI(u);
+            showAuthMessage('Account created!', 'success');
+            setTimeout(() => { closeAuthModal(); signupForm.reset(); }, 1000);
+          }))
+          .catch(err => showAuthMessage(err.message))
+          .finally(() => { if (btn) { btn.textContent = orig; btn.disabled = false; } });
+      } else {
+        // localStorage path
+        setTimeout(() => {
+          const users = getLocalUsers();
+          const key   = email.toLowerCase();
+          if (users[key]) { showAuthMessage('An account with this email already exists.'); if (btn) { btn.textContent = orig; btn.disabled = false; } return; }
+          const user = { displayName: nameVal || email.split('@')[0], email, photoURL: null, passwordHash: hashPassword(password) };
+          users[key] = user;
+          saveLocalUsers(users);
+          const sessionUser = { displayName: user.displayName, email: user.email, photoURL: null };
+          saveLocalSession(sessionUser);
+          updateAuthUI(sessionUser);
+          showAuthMessage('Account created! Welcome, ' + user.displayName + '!', 'success');
+          setTimeout(() => { closeAuthModal(); signupForm.reset(); }, 1000);
+          if (btn) { btn.textContent = orig; btn.disabled = false; }
+        }, 500);
+      }
+    });
+  }
+
+  // ── GOOGLE SIGN IN ──────────────────────────────────────────────────────────
+  if (googleSigninBtn) {
+    googleSigninBtn.addEventListener('click', () => {
+      clearAuthMessage();
+      if (isFirebaseConfigured && auth) {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(provider)
+          .then(() => { showAuthMessage('Google login successful!', 'success'); setTimeout(closeAuthModal, 900); })
+          .catch(err => showAuthMessage(err.message));
+      } else {
+        showAuthMessage('Google Sign-In requires Firebase setup. Use email/password for now — it works offline!', 'error');
+      }
+    });
+  }
+
+  // ── LOGOUT ──────────────────────────────────────────────────────────────────
+  if (authLogoutBtn) {
+    authLogoutBtn.addEventListener('click', () => {
+      if (isFirebaseConfigured && auth) {
+        auth.signOut().catch(console.error);
+      } else {
+        clearLocalSession();
+        updateAuthUI(null);
+      }
+    });
   }
 });

@@ -2056,8 +2056,81 @@ h1, h2, h3, h4 {
 }
 
 /* ==========================================================================
-   ASSASSIN'S CREED AUTH & LOGIN SYSTEM
+   MOBILE PERFORMANCE — 120Hz SMOOTH RENDERING
    ========================================================================== */
+
+/* Force GPU compositing on animated elements */
+#vfx-canvas,
+#intro-canvas,
+.portal-ring,
+.shutter,
+.scan-line,
+.intro-progress-fill {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Prevent paint storms on scroll — contain layout on sections */
+section {
+  contain: layout style;
+}
+
+/* Fast tap / touch response */
+a, button, .btn, .nav-link, .card, .portfolio-item {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Use CSS scroll-snap only when not animating — keeps 120Hz */
+html {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* On mobile: disable hover-heavy drop-shadows to avoid GPU overdraw */
+@media (max-width: 768px) {
+  .service-card, .portfolio-item, .about-stat-card {
+    box-shadow: none !important;
+  }
+
+  /* Disable blurry backdrop-filters on mobile (GPU expensive) */
+  .contact-form-wrapper,
+  #loader-terminal,
+  #loader-telemetry {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* Scale down portal rings on mobile for lighter rendering */
+  .portal-ring { opacity: 0.35; }
+
+  /* Prevent layout thrash on resize events */
+  #vfx-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+  }
+
+  /* Reduce heavy gradient overlays on mobile */
+  .crt-overlay { display: none; }
+
+  /* Keep modal at full width on mobile */
+  .auth-modal-content {
+    width: 95% !important;
+    padding: 1.5rem !important;
+  }
+}
+
+/* Reduce motion for accessibility + performance */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
 :root {
   --ac-gold: #d4af37;
   --ac-gold-rgb: 212, 175, 55;
