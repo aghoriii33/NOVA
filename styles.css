@@ -295,9 +295,9 @@ h3 {
 }
 
 #intro-canvas {
-  width: 300px;
-  height: 300px;
-  margin-bottom: 2rem;
+  width: 360px;
+  height: 360px;
+  margin-bottom: 1.5rem;
 }
 
 .intro-text {
@@ -313,21 +313,23 @@ h3 {
 
 .intro-name {
   font-family: var(--font-heading);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  background: linear-gradient(135deg, var(--text-light) 0%, var(--color-primary) 100%);
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  background: linear-gradient(135deg, #f0e6c0 0%, #d4af37 50%, #8b6914 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   margin-bottom: 0.5rem;
+  text-transform: uppercase;
 }
 
 .intro-tagline {
-  font-size: 0.9rem;
-  letter-spacing: 0.3em;
-  color: var(--text-muted);
-  font-weight: 500;
+  font-size: 0.8rem;
+  letter-spacing: 0.4em;
+  color: #8b6914;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
 .intro-progress-bar {
@@ -342,8 +344,9 @@ h3 {
 .intro-progress-fill {
   width: 0%;
   height: 100%;
-  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary), var(--color-accent));
+  background: linear-gradient(90deg, #8b6914, #d4af37, #f0e6c0, #d4af37);
   transition: width 0.1s linear;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
 }
 
 /* ==========================================================================

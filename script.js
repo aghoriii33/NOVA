@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Set canvas resolution
   function resizeIntroCanvas() {
-    introCanvas.width = 300;
-    introCanvas.height = 300;
+    introCanvas.width = 360;
+    introCanvas.height = 360;
   }
   resizeIntroCanvas();
 
@@ -67,32 +67,32 @@ document.addEventListener('DOMContentLoaded', () => {
   let introAnimationId = null;
   const introDuration = 6000; // 6 seconds total
 
-  // Logging sequence triggers
+  // === ASSASSIN'S CREED ANIMUS LOADER ===
+  // Log sequence — AC themed
   const logLines = [
-    { threshold: 0.05, text: "[SYS] BOOTING SYSTEM DECRYPTOR CORE v1.0.4...", color: "" },
-    { threshold: 0.22, text: "[NET] SYNCING REMOTE AGHORIII33/NOVA...", color: "cyan" },
-    { threshold: 0.45, text: "[DB] 6 PROJECT OBJECT SCHEMA RECORDS MAPPED...", color: "" },
-    { threshold: 0.65, text: "[VFX] COMPILING 3D RENDER GRAPHICS ENGINE...", color: "purple" },
-    { threshold: 0.80, text: "[AUTH] ADMIN AUTHORIZED: MR HRICK & MR RTIYANA...", color: "cyan" },
-    { threshold: 0.92, text: "[READY] SHUTTER TRIGGERED. LAUNCHING WORKSPACE...", color: "" }
+    { threshold: 0.05, text: "[ANIMUS] INITIALIZING GENETIC MEMORY CORE v4.3.5...", color: "" },
+    { threshold: 0.22, text: "[SYNC]   ACCESSING BROTHERHOOD MEMORY ARCHIVE...", color: "cyan" },
+    { threshold: 0.45, text: "[EAGLE]  ACTIVATING EAGLE VISION PROTOCOL...", color: "" },
+    { threshold: 0.65, text: "[CREED]  LOADING SUBJECT MEMORY SEQUENCE...", color: "purple" },
+    { threshold: 0.80, text: "[ANIMUS] SUBJECT IDENTITY CONFIRMED: ASSASSIN...", color: "cyan" },
+    { threshold: 0.92, text: "[SYSTEM] DESYNCHRONIZATION PREVENTED. LAUNCHING...", color: "" }
   ];
   const writtenLogs = new Set();
   let lastMicroLogTime = 0;
   const microLogs = [
-    "[CORE] Fetching instruction cache...",
-    "[CORE] Validating security tokens...",
-    "[NET] Checking websocket latency...",
-    "[NET] Handshake request transmitted...",
-    "[VFX] Creating perspective matrices...",
-    "[VFX] Allocation: 2000 particle vertices...",
-    "[DB] Restructuring collection layout...",
-    "[SYS] Thread pool scaling initialized...",
-    "[SYS] Setting graphics projection FOV...",
-    "[NET] Connection established to remote index..."
+    "[ANIMUS] Calibrating DNA strand resonance...",
+    "[SYNC]   Verifying ancestral memory timestamps...",
+    "[EAGLE]  Scanning environmental parameters...",
+    "[CREED]  Decrypting Templar encoded data...",
+    "[ANIMUS] Cross-referencing Isu artifact indices...",
+    "[SYNC]   Memory bleeding compensation active...",
+    "[CREED]  Brotherhood network handshake sent...",
+    "[ANIMUS] Bleeding effect suppressor engaged...",
+    "[EAGLE]  Neural pathway synchronization 98.4%...",
+    "[SYNC]   Genetic memory lock-in confirmed..."
   ];
 
   function updateLoaderLogs(progress, timestamp) {
-    // Principal logs
     logLines.forEach(log => {
       if (progress >= log.threshold && !writtenLogs.has(log.text)) {
         writtenLogs.add(log.text);
@@ -104,8 +104,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loaderLog.scrollTop = loaderLog.scrollHeight;
       }
     });
-
-    // Random minor log scrolling
     if (timestamp - lastMicroLogTime > 350 && Math.random() < 0.75 && progress < 0.92) {
       lastMicroLogTime = timestamp;
       const text = microLogs[Math.floor(Math.random() * microLogs.length)];
@@ -129,658 +127,360 @@ document.addEventListener('DOMContentLoaded', () => {
     if (teleLoad) teleLoad.textContent = `${(progress * 100).toFixed(2)}%`;
   }
 
-  // Crystalline Geode Nodes representing the core organic network
-  const geodeNodes = [];
-  const totalGeodes = 11;
-  const geodeColors = ['hsl(182, 100%, 50%)', 'hsl(272, 100%, 65%)', 'hsl(332, 100%, 55%)'];
-  
-  for (let i = 0; i < totalGeodes; i++) {
-    const angle = (i / totalGeodes) * Math.PI * 2 + Math.random() * 0.3;
-    const radius = 45 + Math.random() * 35;
-    geodeNodes.push({
-      id: i,
-      x: Math.cos(angle) * radius,
-      y: (Math.random() - 0.5) * 80,
-      z: Math.sin(angle) * radius,
-      vx: 0, vy: 0, vz: 0,
-      size: Math.random() * 12 + 10,
-      rx: Math.random() * Math.PI * 2,
-      ry: Math.random() * Math.PI * 2,
-      rz: Math.random() * Math.PI * 2,
-      rotSpeedX: (Math.random() - 0.5) * 0.015,
-      rotSpeedY: (Math.random() - 0.5) * 0.015,
-      rotSpeedZ: (Math.random() - 0.5) * 0.015,
-      color: geodeColors[i % geodeColors.length],
-      linkThreshold: 0.05 + (i / totalGeodes) * 0.8
-    });
-  }
+  // ─── Canvas & Color Constants ──────────────────────────────────────────────
+  const CX = 180, CY = 180;
+  const AC_GOLD   = '#d4af37';
+  const AC_LIGHT  = '#f0e6c0';
+  const AC_DIM    = '#8b6914';
+  const AC_WHITE  = '#ffffff';
 
-  // Define geode connection links (forming a neural tree)
-  const geodeLinks = [
-    { source: 0, target: 1 }, { source: 1, target: 2 }, { source: 2, target: 3 },
-    { source: 3, target: 4 }, { source: 4, target: 5 }, { source: 5, target: 6 },
-    { source: 6, target: 7 }, { source: 7, target: 8 }, { source: 8, target: 9 },
-    { source: 9, target: 10 }, { source: 10, target: 0 },
-    // Cross connections
-    { source: 1, target: 5 }, { source: 3, target: 8 }, { source: 0, target: 6 }
+  // ─── Emblem stroke paths ───────────────────────────────────────────────────
+  // Points are [x, y] relative to canvas (CX, CY already baked in via ep())
+  const SC = 1.15; // scale factor
+  function ep(x, y) { return [CX + x * SC, CY + y * SC]; }
+
+  const acEmblemStrokes = [
+    // 0 — Left A-leg top to bottom-left
+    { pts: [ep(0,-78), ep(-38,18), ep(-22,52), ep(0,75)],    col: AC_GOLD,  w: 2.2 },
+    // 1 — Right A-leg top to bottom-right (mirrors left)
+    { pts: [ep(0,-78), ep(38,18),  ep(22,52),  ep(0,75)],    col: AC_GOLD,  w: 2.2 },
+    // 2 — Crossbar
+    { pts: [ep(-30,35), ep(30,35)],                           col: AC_GOLD,  w: 2.0 },
+    // 3 — Left inner notch (shoulder detail)
+    { pts: [ep(-38,18), ep(-18,18)],                          col: AC_DIM,   w: 1.2 },
+    // 4 — Right inner notch
+    { pts: [ep(38,18),  ep(18,18)],                           col: AC_DIM,   w: 1.2 },
+    // 5 — Left outer wing — sweeping up-left
+    { pts: [ep(-38,18), ep(-62,2), ep(-88,-22), ep(-82,-48)], col: AC_GOLD,  w: 1.8 },
+    // 6 — Right outer wing — sweeping up-right
+    { pts: [ep(38,18),  ep(62,2),  ep(88,-22),  ep(82,-48)],  col: AC_GOLD,  w: 1.8 },
+    // 7 — Left wing lower curve back to body
+    { pts: [ep(-82,-48), ep(-68,-58), ep(-48,-38), ep(-38,18)], col: AC_GOLD, w: 1.2 },
+    // 8 — Right wing lower curve
+    { pts: [ep(82,-48),  ep(68,-58),  ep(48,-38),  ep(38,18)],  col: AC_GOLD, w: 1.2 },
+    // 9 — Left wing tip feather
+    { pts: [ep(-82,-48), ep(-98,-52), ep(-88,-64)],           col: AC_DIM,   w: 1.0 },
+    // 10 — Right wing tip feather
+    { pts: [ep(82,-48),  ep(98,-52),  ep(88,-64)],            col: AC_DIM,   w: 1.0 },
+    // 11 — Left inner wing brace
+    { pts: [ep(-60,0),   ep(-50,-28), ep(-38,18)],            col: AC_DIM,   w: 0.8 },
+    // 12 — Right inner wing brace
+    { pts: [ep(60,0),    ep(50,-28),  ep(38,18)],             col: AC_DIM,   w: 0.8 },
+    // 13 — Eagle head / beak (top ornament)
+    { pts: [ep(0,-78), ep(-10,-92), ep(0,-104), ep(10,-92), ep(0,-78)], col: AC_WHITE, w: 1.6 },
+    // 14 — Central Animus circle (hidden blade mechanism)
+    { isCircle: true, cx: CX, cy: CY - 2*SC, r: 13*SC,       col: AC_GOLD,  w: 1.5 },
+    // 15 — Inner cross on circle
+    { pts: [ep(-10,-2), ep(10,-2)],                           col: AC_DIM,   w: 0.8 },
+    { pts: [ep(0,-12),  ep(0,8)],                             col: AC_DIM,   w: 0.8 },
   ];
 
-  // Drifting cosmic dust specks
-  const dustParticles = [];
-  for (let i = 0; i < 40; i++) {
-    dustParticles.push({
-      x: (Math.random() - 0.5) * 200,
-      y: (Math.random() - 0.5) * 200,
-      z: Math.random() * 200 - 100,
-      speedY: -0.4 - Math.random() * 0.5,
-      size: Math.random() * 1.5 + 0.5
-    });
-  }
-
-  // Humanoid Cyborg 3D Structure definitions
-  const humanoidPoints = [
-    // Head / Brain core
-    { name: 'head_top', x: 0, y: -45, z: 0 },
-    { name: 'head_bottom', x: 0, y: -30, z: 0 },
-    { name: 'head_left', x: -8, y: -37.5, z: 0 },
-    { name: 'head_right', x: 8, y: -37.5, z: 0 },
-    { name: 'head_front', x: 0, y: -37.5, z: 8 },
-    { name: 'head_back', x: 0, y: -37.5, z: -8 },
-
-    // Spine
-    { name: 'neck', x: 0, y: -25, z: 0 },
-    { name: 'chest', x: 0, y: -10, z: 0 },
-    { name: 'spine_mid', x: 0, y: 5, z: 0 },
-    { name: 'hips', x: 0, y: 25, z: 0 },
-
-    // Shoulders & Chest (trapezoidal ribcage)
-    { name: 'shoulder_l', x: -22, y: -20, z: -2 },
-    { name: 'shoulder_r', x: 22, y: -20, z: -2 },
-    { name: 'rib_l_1', x: -16, y: -5, z: 1 },
-    { name: 'rib_r_1', x: 16, y: -5, z: 1 },
-    { name: 'rib_l_2', x: -12, y: 10, z: 2 },
-    { name: 'rib_r_2', x: 12, y: 10, z: 2 },
-
-    // Arms
-    { name: 'elbow_l', x: -28, y: -2, z: -6 },
-    { name: 'elbow_r', x: 28, y: -2, z: -6 },
-    { name: 'wrist_l', x: -24, y: 16, z: -10 },
-    { name: 'wrist_r', x: 24, y: 16, z: -10 },
-
-    // Hips
-    { name: 'hip_l', x: -10, y: 25, z: 0 },
-    { name: 'hip_r', x: 10, y: 25, z: 0 }
-  ];
-
-  const humanoidLinks = [
-    // Head wireframe
-    { a: 0, b: 2 }, { a: 0, b: 3 }, { a: 0, b: 4 }, { a: 0, b: 5 },
-    { a: 1, b: 2 }, { a: 1, b: 3 }, { a: 1, b: 4 }, { a: 1, b: 5 },
-    { a: 2, b: 4 }, { a: 4, b: 3 }, { a: 3, b: 5 }, { a: 5, b: 2 },
-
-    // Neck & Spine
-    { a: 1, b: 6 },
-    { a: 6, b: 7 }, { a: 7, b: 8 }, { a: 8, b: 9 },
-
-    // Shoulders & Chest
-    { a: 6, b: 10 }, { a: 6, b: 11 },
-    { a: 10, b: 12 }, { a: 11, b: 13 },
-    { a: 12, b: 14 }, { a: 13, b: 15 },
-    { a: 14, b: 9 }, { a: 15, b: 9 },
-    { a: 7, b: 12 }, { a: 7, b: 13 },
-    { a: 8, b: 14 }, { a: 8, b: 15 },
-
-    // Arms
-    { a: 10, b: 16 }, { a: 11, b: 17 },
-    { a: 16, b: 18 }, { a: 17, b: 19 },
-
-    // Hips/Waist
-    { a: 9, b: 20 }, { a: 9, b: 21 },
-    { a: 20, b: 21 }
-  ];
-
-  // 3D vertical falling binary code streams
-  const loaderCodeStreams = [];
-  for (let i = 0; i < 15; i++) {
-    loaderCodeStreams.push({
-      x: (Math.random() - 0.5) * 220,
-      y: (Math.random() - 0.5) * 200,
-      z: Math.random() * 150 - 50,
-      speed: 1.2 + Math.random() * 1.8,
-      chars: Array.from({ length: 6 + Math.floor(Math.random() * 6) }, () => Math.random() > 0.5 ? "1" : "0"),
-      activeCharIdx: 0,
-      tick: 0
-    });
-  }
-
-  const loaderFov = 200;
-  function projectLoader3D(x, y, z, width, height, yaw, pitch) {
-    const cosY = Math.cos(yaw);
-    const sinY = Math.sin(yaw);
-    const x1 = x * cosY - z * sinY;
-    const z1 = x * sinY + z * cosY;
-
-    const cosP = Math.cos(pitch);
-    const sinP = Math.sin(pitch);
-    const y2 = y * cosP - z1 * sinP;
-    const z2 = y * sinP + z1 * cosP;
-
-    const zOffset = z2 + 200;
-    if (zOffset <= 10) return null;
-
-    const scale = loaderFov / zOffset;
-    const sx = width / 2 + x1 * scale;
-    const sy = height / 2 + y2 * scale;
-
-    return { x: sx, y: sy, depth: zOffset, scale: scale };
-  }
-
-  function drawGeode(ctx, node, px, py, pz, scale, cp, cy) {
-    const s = node.size / 2;
-    const vertices = [
-      { x: 0, y: -s * 1.6, z: 0 }, 
-      { x: 0, y: s * 1.6, z: 0 },  
-      { x: -s, y: 0, z: -s },      
-      { x: s, y: 0, z: -s },       
-      { x: s, y: 0, z: s },        
-      { x: -s, y: 0, z: s }        
-    ];
-
-    const faces = [
-      [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 5, 2], 
-      [1, 3, 2], [1, 4, 3], [1, 5, 4], [1, 2, 5]  
-    ];
-
-    const projectedVerts = [];
-    for (let i = 0; i < vertices.length; i++) {
-      const v = vertices[i];
-      const cosX = Math.cos(node.rx); const sinX = Math.sin(node.rx);
-      const cosY = Math.cos(node.ry); const sinY = Math.sin(node.ry);
-      const cosZ = Math.cos(node.rz); const sinZ = Math.sin(node.rz);
-
-      let y1 = v.y * cosX - v.z * sinX;
-      let z1 = v.y * sinX + v.z * cosX;
-      let x2 = v.x * cosY - z1 * sinY;
-      let z2 = v.x * sinY + z1 * cosY;
-      let x3 = x2 * cosZ - y1 * sinZ;
-      let y3 = x2 * sinZ + y1 * cosZ;
-
-      const pt = projectLoader3D(x3 + px, y3 + py, z2 + pz, 300, 300, cp, cy);
-      if (!pt) return;
-      projectedVerts.push(pt);
+  // ─── Polyline length helper ────────────────────────────────────────────────
+  function polylineLength(pts) {
+    let len = 0;
+    for (let i = 1; i < pts.length; i++) {
+      const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+      len += Math.sqrt(dx*dx + dy*dy);
     }
+    return len;
+  }
 
-    ctx.save();
-    ctx.fillStyle = 'rgba(6, 6, 15, 0.85)';
-    ctx.strokeStyle = node.color;
-    ctx.lineWidth = 0.8;
-    ctx.shadowBlur = 4;
-    ctx.shadowColor = node.color;
+  function drawStrokeFraction(ctx, pts, frac) {
+    if (pts.length < 2 || frac <= 0) return;
+    const total = polylineLength(pts);
+    const target = total * Math.min(1, frac);
+    let drawn = 0;
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length; i++) {
+      const dx = pts[i][0] - pts[i-1][0], dy = pts[i][1] - pts[i-1][1];
+      const seg = Math.sqrt(dx*dx + dy*dy);
+      if (drawn + seg >= target) {
+        const t = (target - drawn) / seg;
+        ctx.lineTo(pts[i-1][0] + dx*t, pts[i-1][1] + dy*t);
+        break;
+      }
+      ctx.lineTo(pts[i][0], pts[i][1]);
+      drawn += seg;
+    }
+    ctx.stroke();
+  }
 
-    faces.forEach(face => {
+  // ─── Animus rotating rings ─────────────────────────────────────────────────
+  const animusRings = [
+    { r: 112, rotDir:  1, speed: 0.004, col: 'rgba(212,175,55,0.50)', dash: [10,6],  lw: 1.2, ticks: 36 },
+    { r: 122, rotDir: -1, speed: 0.003, col: 'rgba(212,175,55,0.25)', dash: [4,10],  lw: 0.8, ticks: 0  },
+    { r: 104, rotDir:  1, speed: 0.006, col: 'rgba(255,255,255,0.12)', dash: [2,7],  lw: 0.6, ticks: 12 },
+  ];
+  let acAngle = 0;
+
+  function drawAnimusRings(ctx, timestamp, progress) {
+    const alpha = Math.min(1, (progress - 0.08) * 6);
+    if (alpha <= 0) return;
+    acAngle += 0.006;
+
+    animusRings.forEach((ring, ri) => {
+      const pulse = 1 + Math.sin(timestamp * 0.0018 + ri) * 0.12;
+      const a = Math.min(1, alpha * pulse);
+
+      ctx.save();
+      ctx.strokeStyle = ring.col.replace(/[\d.]+\)$/, `${parseFloat(ring.col.match(/[\d.]+\)$/)?.[0] || 0.4) * a})`);
+      ctx.lineWidth = ring.lw;
+      ctx.setLineDash(ring.dash);
+      ctx.lineDashOffset = -acAngle * ring.rotDir * 200;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = AC_GOLD;
       ctx.beginPath();
-      ctx.moveTo(projectedVerts[face[0]].x, projectedVerts[face[0]].y);
-      ctx.lineTo(projectedVerts[face[1]].x, projectedVerts[face[1]].y);
-      ctx.lineTo(projectedVerts[face[2]].x, projectedVerts[face[2]].y);
-      ctx.closePath();
-      ctx.fill();
+      ctx.arc(CX, CY, ring.r, 0, Math.PI * 2);
       ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Tick marks
+      if (ring.ticks > 0) {
+        ctx.lineWidth = 0.7;
+        ctx.shadowBlur = 4;
+        for (let i = 0; i < ring.ticks; i++) {
+          const ang = (i / ring.ticks) * Math.PI * 2 + acAngle * ring.rotDir * 0.5;
+          const tickLen = (i % 3 === 0) ? 8 : 4;
+          const inner = ring.r - tickLen;
+          ctx.beginPath();
+          ctx.moveTo(CX + Math.cos(ang) * inner, CY + Math.sin(ang) * inner);
+          ctx.lineTo(CX + Math.cos(ang) * ring.r,  CY + Math.sin(ang) * ring.r);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
     });
 
-    const centerPt = projectLoader3D(px, py, pz, 300, 300, cp, cy);
-    if (centerPt) {
-      const coreSize = Math.max(1.5, scale * 0.025);
-      ctx.fillStyle = node.color;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = node.color;
-      ctx.beginPath();
-      ctx.arc(centerPt.x, centerPt.y, coreSize, 0, Math.PI * 2);
-      ctx.fill();
+    // Cardinal tick labels
+    const labelAlpha = Math.min(1, (progress - 0.2) * 5) * 0.7;
+    if (labelAlpha > 0) {
+      const labels = ['N', 'E', 'S', 'W'];
+      ctx.save();
+      ctx.font = 'bold 8px monospace';
+      ctx.fillStyle = `rgba(212,175,55,${labelAlpha})`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      labels.forEach((lbl, i) => {
+        const ang = (i / 4) * Math.PI * 2 - Math.PI / 2;
+        ctx.fillText(lbl, CX + Math.cos(ang) * 132, CY + Math.sin(ang) * 132);
+      });
+      ctx.restore();
     }
-
-    ctx.restore();
   }
 
-  function drawOrganicTendril(ctx, p1, p2, color, opacity, timestamp) {
+  // ─── Triangular Eagle Vision grid ─────────────────────────────────────────
+  const gridPts = Array.from({length: 14}, (_, i) => {
+    const ang = (i / 14) * Math.PI * 2;
+    const r = 118 + (i % 3) * 10;
+    return { x: CX + Math.cos(ang) * r, y: CY + Math.sin(ang) * r };
+  });
+
+  function drawEagleVisionGrid(ctx, progress) {
+    const alpha = Math.min(1, progress * 5) * 0.10;
+    if (alpha <= 0) return;
     ctx.save();
-    ctx.strokeStyle = color.replace(')', `, ${opacity})`).replace('rgb', 'rgba').replace('hsl', 'hsla');
-    ctx.lineWidth = 0.8;
-    
-    for (let j = 0; j < 2; j++) {
-      const dx = p2.x - p1.x;
-      const dy = p2.y - p1.y;
-      
-      const offsetX = -dy * 0.15 * (j === 0 ? 1 : -0.8) + Math.sin(timestamp * 0.003 + j) * 4;
-      const offsetY = dx * 0.15 * (j === 0 ? 1 : -0.8) + Math.cos(timestamp * 0.003 + j) * 4;
-      
-      const cx = (p1.x + p2.x) / 2 + offsetX;
-      const cy = (p1.y + p2.y) / 2 + offsetY;
-      
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.quadraticCurveTo(cx, cy, p2.x, p2.y);
+    ctx.strokeStyle = `rgba(212,175,55,${alpha})`;
+    ctx.lineWidth = 0.4;
+    for (let i = 0; i < gridPts.length; i++) {
+      const a = gridPts[i], b = gridPts[(i+1) % gridPts.length];
+      ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.closePath();
       ctx.stroke();
     }
     ctx.restore();
   }
 
-  function drawTendrilSignal(ctx, p1, p2, color, timestamp, seed) {
-    const pulseProgress = (timestamp * 0.0012 + seed * 0.4) % 1.0;
-    const dx = p2.x - p1.x;
-    const dy = p2.y - p1.y;
-    const offsetX = -dy * 0.15 + Math.sin(timestamp * 0.003) * 4;
-    const offsetY = dx * 0.15 + Math.cos(timestamp * 0.003) * 4;
-    const cx = (p1.x + p2.x) / 2 + offsetX;
-    const cy = (p1.y + p2.y) / 2 + offsetY;
-    
-    const t = pulseProgress;
-    const px = Math.pow(1-t, 2) * p1.x + 2 * (1-t) * t * cx + Math.pow(t, 2) * p2.x;
-    const py = Math.pow(1-t, 2) * p1.y + 2 * (1-t) * t * cy + Math.pow(t, 2) * p2.y;
-    
+  // ─── Falling ancient rune streams ─────────────────────────────────────────
+  const runeChars = ['✦','⌘','⊕','△','▽','◈','⊗','⌬','Δ','Σ','Λ','ψ','Ω','ℭ','☩','⌁','⍟'];
+  const runeStreams = Array.from({length: 14}, () => ({
+    x: 15 + Math.random() * 330,
+    y: -(Math.random() * 360),
+    speed: 0.55 + Math.random() * 0.8,
+    chars: Array.from({length: 5 + Math.floor(Math.random()*5)}, () => runeChars[Math.floor(Math.random()*runeChars.length)]),
+    op: 0.25 + Math.random() * 0.35,
+    tick: 0
+  }));
+
+  function drawRuneStreams(ctx, timestamp, progress) {
+    const alpha = Math.min(1, progress * 4) * 0.9;
+    if (alpha <= 0) return;
     ctx.save();
-    ctx.fillStyle = '#ffffff';
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = color;
-    ctx.beginPath();
-    ctx.arc(px, py, 1.8, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  }
-
-  function drawLoaderGodRays(ctx, w, h, timestamp) {
-    ctx.save();
-    ctx.globalCompositeOperation = 'screen';
-    
-    const rayCount = 5;
-    const xCenter = w / 2;
-    const yCenter = -40;
-    
-    for (let i = 0; i < rayCount; i++) {
-      const angle = -0.15 + (i / (rayCount - 1)) * 0.3 + Math.sin(timestamp * 0.0004 + i * 2) * 0.02;
-      const rayWidth = 35 + Math.sin(timestamp * 0.0008 + i) * 15;
-      
-      const grad = ctx.createLinearGradient(xCenter, 0, xCenter + Math.tan(angle) * h, h);
-      grad.addColorStop(0, `rgba(0, 242, 254, ${0.012 + Math.sin(timestamp * 0.001 + i) * 0.006})`);
-      grad.addColorStop(0.4, `rgba(127, 0, 255, ${0.016 + Math.cos(timestamp * 0.0007 + i) * 0.008})`);
-      grad.addColorStop(1, 'rgba(0,0,0,0)');
-      
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(xCenter - rayWidth / 2, yCenter);
-      ctx.lineTo(xCenter + rayWidth / 2, yCenter);
-      ctx.lineTo(xCenter + Math.tan(angle) * h + rayWidth * 2, h);
-      ctx.lineTo(xCenter + Math.tan(angle) * h - rayWidth * 2, h);
-      ctx.closePath();
-      ctx.fill();
-    }
-    ctx.restore();
-  }
-
-  function drawLoaderDust(ctx, timestamp, cp, cy) {
-    ctx.save();
-    dustParticles.forEach(p => {
-      p.y += p.speedY;
-      if (p.y < -120) {
-        p.y = 120;
-        p.x = (Math.random() - 0.5) * 200;
-      }
-      
-      const pt = projectLoader3D(p.x, p.y, p.z, 300, 300, cp, cy);
-      if (pt) {
-        const size = p.size * pt.scale * 0.005;
-        const opacity = Math.max(0.1, 0.6 * (1 - pt.depth / 350));
-        ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    });
-    ctx.restore();
-  }
-
-  function drawScanningBeam(ctx, w, h, timestamp) {
-    ctx.save();
-    const beamY = 70 + (Math.sin(timestamp * 0.0018) * 0.5 + 0.5) * 200; 
-    const grad = ctx.createLinearGradient(0, beamY - 12, 0, beamY + 3);
-    grad.addColorStop(0, 'rgba(0, 242, 254, 0)');
-    grad.addColorStop(0.5, 'rgba(127, 0, 255, 0.08)');
-    grad.addColorStop(1, 'rgba(0, 242, 254, 0.22)');
-    
-    ctx.fillStyle = grad;
-    ctx.fillRect(35, beamY - 12, w - 70, 12);
-    
-    ctx.strokeStyle = '#00f2fe';
-    ctx.lineWidth = 1.5;
-    ctx.shadowBlur = 6;
-    ctx.shadowColor = '#00f2fe';
-    ctx.beginPath();
-    ctx.moveTo(35, beamY);
-    ctx.lineTo(w - 70, beamY);
-    ctx.stroke();
-    
-    ctx.restore();
-  }
-
-  // Draw 3D Floating Cyborg Humanoid
-  function drawHumanoid(ctx, timestamp, cp, cy) {
-    const breatheY = Math.sin(timestamp * 0.0015) * 5;
-    
-    const projectedPts = humanoidPoints.map(p => {
-      return projectLoader3D(p.x, p.y + breatheY, p.z, 300, 300, cp, cy);
-    });
-
-    ctx.save();
-    ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
-    ctx.lineWidth = 1.0;
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#00f2fe';
-
-    // Draw lines
-    humanoidLinks.forEach(link => {
-      const p1 = projectedPts[link.a];
-      const p2 = projectedPts[link.b];
-      if (p1 && p2) {
-        ctx.beginPath();
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
-        ctx.stroke();
-      }
-    });
-
-    // Glowing core
-    const corePt = projectedPts[1];
-    if (corePt) {
-      ctx.fillStyle = '#ff007f';
-      ctx.shadowColor = '#ff007f';
-      ctx.shadowBlur = 12;
-      ctx.beginPath();
-      ctx.arc(corePt.x, corePt.y - 4, 3, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    // Joint dots
-    ctx.fillStyle = '#00f2fe';
-    ctx.shadowColor = '#00f2fe';
-    ctx.shadowBlur = 6;
-    [10, 11, 16, 17, 18, 19, 20, 21].forEach(idx => {
-      const pt = projectedPts[idx];
-      if (pt) {
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    });
-
-    ctx.restore();
-  }
-
-  // Draw Concentric Telemetry Rings rotating around the core
-  function drawHumanoidRings(ctx, timestamp, cp, cy) {
-    const breatheY = Math.sin(timestamp * 0.0015) * 5;
-    const centerY = -10 + breatheY;
-    
-    // Ring 1: Cyan, tilted horizontal ring spinning clockwise
-    const radius1 = 28;
-    const rotSpeed1 = timestamp * 0.002;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(0, 242, 254, 0.6)';
-    ctx.lineWidth = 1.0;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = '#00f2fe';
-    
-    ctx.beginPath();
-    let first = true;
-    const segments = 36;
-    for (let i = 0; i <= segments; i++) {
-      const angle = (i / segments) * Math.PI * 2;
-      const tiltX = 0.4; 
-      const lx = radius1 * Math.cos(angle);
-      const lz = radius1 * Math.sin(angle);
-      const ly = 0;
-      
-      const cosT = Math.cos(tiltX);
-      const sinT = Math.sin(tiltX);
-      const ry1 = ly * cosT - lz * sinT;
-      const rz1 = ly * sinT + lz * cosT;
-      
-      const cosS = Math.cos(rotSpeed1);
-      const sinS = Math.sin(rotSpeed1);
-      const rx2 = lx * cosS - rz1 * sinS;
-      const rz2 = lx * sinS + rz1 * cosS;
-      
-      const pt = projectLoader3D(rx2, ry1 + centerY, rz2, 300, 300, cp, cy);
-      if (pt) {
-        if (first) {
-          ctx.moveTo(pt.x, pt.y);
-          first = false;
+    ctx.font = '10px serif';
+    runeStreams.forEach(s => {
+      s.y += s.speed;
+      s.tick++;
+      if (s.tick > 18) { s.tick = 0; s.chars[Math.floor(Math.random()*s.chars.length)] = runeChars[Math.floor(Math.random()*runeChars.length)]; }
+      if (s.y > 380) { s.y = -60; s.x = 15 + Math.random()*330; }
+      s.chars.forEach((ch, idx) => {
+        const cy2 = s.y - idx * 13;
+        if (cy2 < -15 || cy2 > 375) return;
+        const fade = Math.max(0, 1 - idx / s.chars.length);
+        const op = alpha * s.op * fade;
+        if (idx === 0) {
+          ctx.fillStyle = `rgba(240,230,192,${op * 1.6})`;
+          ctx.shadowColor = AC_GOLD; ctx.shadowBlur = 10;
         } else {
-          ctx.lineTo(pt.x, pt.y);
+          ctx.fillStyle = `rgba(212,175,55,${op})`;
+          ctx.shadowBlur = 3; ctx.shadowColor = AC_GOLD;
         }
-      }
-    }
-    ctx.stroke();
-    ctx.restore();
-
-    // Ring 2: Purple, vertical-tilted ring spinning counter-clockwise
-    const radius2 = 38;
-    const rotSpeed2 = -timestamp * 0.0015;
-    ctx.save();
-    ctx.strokeStyle = 'rgba(127, 0, 255, 0.5)';
-    ctx.lineWidth = 0.8;
-    ctx.setLineDash([4, 4]);
-    ctx.shadowBlur = 8;
-    ctx.shadowColor = '#7f00ff';
-    
-    ctx.beginPath();
-    first = true;
-    for (let i = 0; i <= segments; i++) {
-      const angle = (i / segments) * Math.PI * 2;
-      const tiltZ = -0.5;
-      const lx = radius2 * Math.cos(angle);
-      const ly = radius2 * Math.sin(angle);
-      const lz = 0;
-      
-      const cosT = Math.cos(tiltZ);
-      const sinT = Math.sin(tiltZ);
-      const rx1 = lx * cosT - ly * sinT;
-      const ry1 = lx * sinT + ly * cosT;
-      
-      const cosS = Math.cos(rotSpeed2);
-      const sinS = Math.sin(rotSpeed2);
-      const rx2 = rx1 * cosS - lz * sinS;
-      const rz2 = rx1 * sinS + lz * cosS;
-      
-      const pt = projectLoader3D(rx2, ry1 + centerY, rz2, 300, 300, cp, cy);
-      if (pt) {
-        if (first) {
-          ctx.moveTo(pt.x, pt.y);
-          first = false;
-        } else {
-          ctx.lineTo(pt.x, pt.y);
-        }
-      }
-    }
-    ctx.stroke();
-    ctx.restore();
-  }
-
-  // Draw 3D vertical matrix-like falling streams
-  function drawLoaderCodeStreams(ctx, timestamp, cp, cy) {
-    ctx.save();
-    ctx.font = '8px monospace';
-    ctx.shadowBlur = 4;
-    
-    loaderCodeStreams.forEach(stream => {
-      stream.y += stream.speed;
-      if (stream.y > 150) {
-        stream.y = -150;
-        stream.x = (Math.random() - 0.5) * 220;
-      }
-      
-      stream.tick++;
-      if (stream.tick > 10) {
-        stream.tick = 0;
-        stream.activeCharIdx = (stream.activeCharIdx + 1) % stream.chars.length;
-        stream.chars[stream.activeCharIdx] = Math.random() > 0.5 ? "1" : "0";
-      }
-
-      stream.chars.forEach((char, idx) => {
-        const charY = stream.y - idx * 10;
-        const pt = projectLoader3D(stream.x, charY, stream.z, 300, 300, cp, cy);
-        
-        if (pt) {
-          const depthFade = Math.max(0.1, 1 - pt.depth / 350);
-          const trailFade = 1 - (idx / stream.chars.length);
-          const opacity = depthFade * trailFade * 0.45;
-          
-          if (idx === 0) {
-            ctx.fillStyle = `rgba(57, 255, 20, ${opacity * 1.5})`;
-            ctx.shadowColor = '#39ff14';
-          } else {
-            ctx.fillStyle = `rgba(0, 242, 254, ${opacity})`;
-            ctx.shadowColor = '#00f2fe';
-          }
-          
-          ctx.fillText(char, pt.x, pt.y);
-        }
+        ctx.fillText(ch, s.x, cy2);
       });
     });
-    
     ctx.restore();
   }
 
-  class ExplodingParticle {
-    constructor(x, y, color) {
-      this.x = x;
-      this.y = y;
-      this.vx = (Math.random() - 0.5) * 10;
-      this.vy = (Math.random() - 0.5) * 10;
-      this.alpha = 1;
-      this.size = Math.random() * 4 + 1.5;
-      this.color = color;
-    }
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.alpha -= 0.025;
-    }
-    draw(ctx) {
+  // ─── AC Emblem assembling ──────────────────────────────────────────────────
+  function drawACEmblem(ctx, timestamp, progress) {
+    // Emblem draws from 22% → 85%
+    const ep2 = Math.max(0, Math.min(1, (progress - 0.22) / 0.63));
+    if (ep2 <= 0) return;
+
+    const totalStrokes = acEmblemStrokes.length;
+    const glow = 6 + ep2 * 18;
+
+    acEmblemStrokes.forEach((stroke, idx) => {
+      const sStart = (idx / totalStrokes) * 0.88;
+      const sEnd   = ((idx + 2.0) / totalStrokes) * 0.88;
+      const frac   = Math.max(0, Math.min(1, (ep2 - sStart) / (sEnd - sStart)));
+      if (frac <= 0) return;
+
       ctx.save();
-      ctx.globalAlpha = Math.max(0, this.alpha);
-      ctx.fillStyle = this.color;
-      ctx.shadowBlur = 8;
-      ctx.shadowColor = this.color;
+      ctx.strokeStyle = stroke.col;
+      ctx.lineWidth   = stroke.w || 1.5;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.shadowBlur  = glow;
+      ctx.shadowColor = stroke.col === AC_WHITE ? AC_WHITE : AC_GOLD;
+
+      if (stroke.isCircle) {
+        ctx.beginPath();
+        ctx.arc(stroke.cx, stroke.cy, stroke.r, -Math.PI/2, -Math.PI/2 + frac * Math.PI * 2);
+        ctx.stroke();
+      } else {
+        drawStrokeFraction(ctx, stroke.pts, frac);
+      }
+      ctx.restore();
+    });
+
+    // Aura glow at near-complete
+    if (ep2 > 0.88) {
+      const ga = (ep2 - 0.88) / 0.12;
+      ctx.save();
+      const grad = ctx.createRadialGradient(CX, CY, 0, CX, CY, 95);
+      grad.addColorStop(0,   `rgba(212,175,55,${ga * 0.20})`);
+      grad.addColorStop(0.5, `rgba(212,175,55,${ga * 0.08})`);
+      grad.addColorStop(1,   'rgba(212,175,55,0)');
+      ctx.globalCompositeOperation = 'screen';
+      ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.arc(CX, CY, 95, 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
   }
-  let explodingParticles = [];
 
-  let loaderPitch = 0;
-  let loaderYaw = 0;
+  // ─── Eagle Vision horizontal sweep ────────────────────────────────────────
+  function drawEagleSweep(ctx, timestamp, progress) {
+    if (progress < 0.68) return;
+    const sp = Math.min(1, (progress - 0.68) / 0.22);
+    const sweepX = sp * 300;
+    const grad = ctx.createLinearGradient(sweepX - 50, 0, sweepX + 50, 0);
+    grad.addColorStop(0,   'rgba(212,175,55,0)');
+    grad.addColorStop(0.5, `rgba(212,175,55,${0.15 * (1 - Math.abs(sp - 0.5) * 2)})`);
+    grad.addColorStop(1,   'rgba(212,175,55,0)');
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 360, 360);
+    ctx.restore();
+  }
 
+  // ─── Scanning horizontal laser ─────────────────────────────────────────────
+  function drawACScanner(ctx, timestamp, progress) {
+    if (progress > 0.92) return;
+    const scanY = CY + Math.sin(timestamp * 0.002) * 110;
+    const scanAlpha = Math.min(0.35, progress * 0.5);
+    const grad = ctx.createLinearGradient(0, scanY - 10, 0, scanY + 2);
+    grad.addColorStop(0, 'rgba(212,175,55,0)');
+    grad.addColorStop(0.7, `rgba(212,175,55,${scanAlpha * 0.4})`);
+    grad.addColorStop(1,   `rgba(212,175,55,${scanAlpha})`);
+    ctx.save();
+    ctx.fillStyle = grad;
+    ctx.fillRect(20, scanY - 10, 320, 12);
+    ctx.strokeStyle = `rgba(212,175,55,${scanAlpha})`;
+    ctx.lineWidth = 1;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = AC_GOLD;
+    ctx.beginPath(); ctx.moveTo(20, scanY); ctx.lineTo(340, scanY); ctx.stroke();
+    ctx.restore();
+  }
+
+  // ─── Gold particle finale ──────────────────────────────────────────────────
+  class ACParticle {
+    constructor(x, y) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = 1.5 + Math.random() * 5;
+      this.x = x; this.y = y;
+      this.vx = Math.cos(ang) * spd;
+      this.vy = Math.sin(ang) * spd;
+      this.alpha = 1;
+      this.size  = Math.random() * 3 + 0.8;
+      this.col   = Math.random() > 0.4 ? AC_GOLD : AC_WHITE;
+    }
+    update() { this.x += this.vx; this.y += this.vy; this.vy += 0.08; this.alpha -= 0.018; }
+    draw(ctx) {
+      if (this.alpha <= 0) return;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, this.alpha);
+      ctx.fillStyle = this.col;
+      ctx.shadowBlur = 10; ctx.shadowColor = this.col;
+      ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+  }
+  let acParticles = [];
+
+  // ─── Main drawIntro loop ───────────────────────────────────────────────────
   function drawIntro(timestamp) {
     if (!introStartTime) introStartTime = timestamp;
-    const elapsed = timestamp - introStartTime;
+    const elapsed  = timestamp - introStartTime;
     const progress = Math.min(elapsed / introDuration, 1);
-    
+
     progressFill.style.width = `${progress * 100}%`;
     updateLoaderLogs(progress, timestamp);
     updateTelemetry(progress);
 
-    introCtx.clearRect(0, 0, 300, 300);
-    
-    loaderYaw = timestamp * 0.0003;
-    loaderPitch = Math.sin(timestamp * 0.0002) * 0.12;
+    introCtx.clearRect(0, 0, 360, 360);
 
     if (progress < 0.94) {
-      // 1. Background matrix falling streams
-      drawLoaderCodeStreams(introCtx, timestamp, loaderPitch, loaderYaw);
-
-      // 2. God rays
-      drawLoaderGodRays(introCtx, 300, 300, timestamp);
-
-      // 3. Cosmic dust
-      drawLoaderDust(introCtx, timestamp, loaderPitch, loaderYaw);
-      
-      // 4. Background geode nodes & connection web
-      geodeNodes.forEach(node => {
-        node.rx += node.rotSpeedX;
-        node.ry += node.rotSpeedY;
-        node.rz += node.rotSpeedZ;
-      });
-      
-      geodeLinks.forEach((link, idx) => {
-        const sNode = geodeNodes[link.source];
-        const tNode = geodeNodes[link.target];
-        
-        const active = progress >= sNode.linkThreshold && progress >= tNode.linkThreshold;
-        if (active) {
-          const pt1 = projectLoader3D(sNode.x, sNode.y, sNode.z, 300, 300, loaderPitch, loaderYaw);
-          const pt2 = projectLoader3D(tNode.x, tNode.y, tNode.z, 300, 300, loaderPitch, loaderYaw);
-          if (pt1 && pt2) {
-            const opacity = 0.15 + (progress - Math.max(sNode.linkThreshold, tNode.linkThreshold)) * 0.8;
-            drawOrganicTendril(introCtx, pt1, pt2, sNode.color, opacity, timestamp);
-            drawTendrilSignal(introCtx, pt1, pt2, sNode.color, timestamp, idx);
-          }
-        }
-      });
-
-      const projectedNodes = [];
-      geodeNodes.forEach(node => {
-        const pt = projectLoader3D(node.x, node.y, node.z, 300, 300, loaderPitch, loaderYaw);
-        if (pt) {
-          projectedNodes.push({
-            pt: pt,
-            node: node
-          });
-        }
-      });
-      
-      projectedNodes.sort((a, b) => b.pt.depth - a.pt.depth);
-      
-      projectedNodes.forEach(pn => {
-        const active = progress >= pn.node.linkThreshold;
-        if (active) {
-          drawGeode(introCtx, pn.node, pn.node.x, pn.node.y, pn.node.z, pn.pt.scale, loaderPitch, loaderYaw);
-        } else {
-          const size = Math.max(2, pn.node.size * pn.pt.scale * 0.002);
-          introCtx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
-          introCtx.beginPath();
-          introCtx.arc(pn.pt.x, pn.pt.y, size, 0, Math.PI*2);
-          introCtx.stroke();
-        }
-      });
-
-      // 5. Central 3D cyborg humanoid
-      drawHumanoid(introCtx, timestamp, loaderPitch, loaderYaw);
-
-      // 6. Concentric portal telemetry rings
-      drawHumanoidRings(introCtx, timestamp, loaderPitch, loaderYaw);
-
-      // 7. Scanning beam
-      drawScanningBeam(introCtx, 300, 300, timestamp);
+      // Layer 1 — rune streams (background)
+      drawRuneStreams(introCtx, timestamp, progress);
+      // Layer 2 — Eagle Vision triangular grid
+      drawEagleVisionGrid(introCtx, progress);
+      // Layer 3 — rotating Animus rings
+      drawAnimusRings(introCtx, timestamp, progress);
+      // Layer 4 — Eagle Vision golden sweep
+      drawEagleSweep(introCtx, timestamp, progress);
+      // Layer 5 — AC Emblem assembling itself
+      drawACEmblem(introCtx, timestamp, progress);
+      // Layer 6 — scanning laser line
+      drawACScanner(introCtx, timestamp, progress);
     } else {
-      if (explodingParticles.length === 0) {
-        for (let a = 0; a < Math.PI * 2; a += 0.08) {
-          const r = 100;
-          const px = 150 + Math.cos(a) * r;
-          const py = 150 + Math.sin(a) * r;
-          explodingParticles.push(new ExplodingParticle(px, py, '#00f2fe'));
-          explodingParticles.push(new ExplodingParticle(px, py, '#ff007f'));
-          explodingParticles.push(new ExplodingParticle(px, py, '#39ff14'));
+      // Finale — gold particle burst
+      if (acParticles.length === 0) {
+        for (let i = 0; i < 90; i++) {
+          const ang = (i / 90) * Math.PI * 2;
+          const r   = 15 + Math.random() * 85;
+          acParticles.push(new ACParticle(CX + Math.cos(ang)*r, CY + Math.sin(ang)*r));
         }
         introText.classList.add('reveal');
       }
     }
 
-    if (explodingParticles.length > 0) {
-      explodingParticles.forEach(p => {
-        p.update();
-        p.draw(introCtx);
-      });
+    // Render particles
+    if (acParticles.length > 0) {
+      acParticles.forEach(p => { p.update(); p.draw(introCtx); });
+      acParticles = acParticles.filter(p => p.alpha > 0);
     }
 
     if (progress < 1) {
@@ -795,6 +495,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   requestAnimationFrame(drawIntro);
+
+
 
 
   /* ==========================================================================
