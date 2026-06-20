@@ -129,6 +129,37 @@ document.addEventListener('DOMContentLoaded', () => {
     if (teleLoad) teleLoad.textContent = `${(progress * 100).toFixed(2)}%`;
   }
 
+  // Central Cyborg Nodes for structural reference
+  const cyborgNodes = [
+    {x: 150, y: 140, r: 5}, // Heart core
+    {x: 150, y: 85, r: 3},  // Brain center
+    {x: 120, y: 120, r: 2}, // L Shoulder
+    {x: 180, y: 120, r: 2}, // R Shoulder
+    {x: 95, y: 145, r: 2},  // L Elbow
+    {x: 205, y: 145, r: 2}, // R Elbow
+    {x: 140, y: 192, r: 2}, // L Hip
+    {x: 160, y: 192, r: 2}, // R Hip
+    {x: 132, y: 235, r: 2}, // L Knee
+    {x: 168, y: 235, r: 2}  // R Knee
+  ];
+
+  // Loader Crystalline neural shards (incorporating Reference 2 style)
+  const loaderShards = [];
+  const totalLoaderShards = 12;
+  for (let i = 0; i < totalLoaderShards; i++) {
+    const angle = (i / totalLoaderShards) * Math.PI * 2 + Math.random() * 0.25;
+    const distance = 55 + Math.random() * 45;
+    loaderShards.push({
+      x: 150 + Math.cos(angle) * distance,
+      y: 150 + Math.sin(angle) * distance,
+      size: Math.random() * 5 + 3.5,
+      angle: Math.random() * Math.PI * 2,
+      rotSpeed: (Math.random() - 0.5) * 0.035,
+      connectedNodeIndex: Math.floor(Math.random() * cyborgNodes.length),
+      linkThreshold: 0.12 + (i / totalLoaderShards) * 0.7
+    });
+  }
+
   // Draw Cyborg wireframe
   function drawCyborgWireframe(ctx, cx, cy, progress, timestamp) {
     ctx.save();
@@ -215,24 +246,99 @@ document.addEventListener('DOMContentLoaded', () => {
     const pulseFactor = 0.5 + Math.sin(timestamp * 0.008) * 0.5;
     ctx.fillStyle = `rgba(57, 255, 20, ${0.4 + pulseFactor * 0.6})`;
     
-    const nodes = [
-      {x: 150, y: 140, r: 5}, // Heart core
-      {x: 150, y: 85, r: 3},  // Brain center
-      {x: 120, y: 120, r: 2}, // L Shoulder
-      {x: 180, y: 120, r: 2}, // R Shoulder
-      {x: 95, y: 145, r: 2},  // L Elbow
-      {x: 205, y: 145, r: 2}, // R Elbow
-      {x: 140, y: 192, r: 2}, // L Hip
-      {x: 160, y: 192, r: 2}, // R Hip
-      {x: 132, y: 235, r: 2}, // L Knee
-      {x: 168, y: 235, r: 2}  // R Knee
-    ];
-    
-    nodes.forEach(node => {
+    cyborgNodes.forEach(node => {
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
       ctx.fill();
     });
+    
+    ctx.restore();
+  }
+
+  // Draw floating crystalline shards and their neural lines
+  function drawLoaderShards(ctx, progress, timestamp) {
+    ctx.save();
+    
+    loaderShards.forEach(shard => {
+      // 1. Update rotation
+      shard.angle += shard.rotSpeed;
+      
+      // 2. Float drift offset
+      const dx = Math.sin(timestamp * 0.0012 + shard.x) * 2.5;
+      const dy = Math.cos(timestamp * 0.0014 + shard.y) * 2.5;
+      const sx = shard.x + dx;
+      const sy = shard.y + dy;
+      
+      // 3. Draw crystalline diamond/shard
+      const active = progress >= shard.linkThreshold;
+      ctx.strokeStyle = active ? 'rgba(0, 242, 254, 0.7)' : 'rgba(0, 242, 254, 0.2)';
+      ctx.fillStyle = active ? 'rgba(0, 242, 254, 0.15)' : 'rgba(0, 242, 254, 0.03)';
+      ctx.lineWidth = 1;
+      
+      ctx.save();
+      ctx.translate(sx, sy);
+      ctx.rotate(shard.angle);
+      
+      ctx.beginPath();
+      ctx.moveTo(0, -shard.size);
+      ctx.lineTo(shard.size / 1.6, 0);
+      ctx.lineTo(0, shard.size);
+      ctx.lineTo(-shard.size / 1.6, 0);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+      
+      // 4. Draw neural connection line to the cyborg nodes
+      if (active) {
+        const targetNode = cyborgNodes[shard.connectedNodeIndex];
+        
+        ctx.strokeStyle = `rgba(127, 0, 255, ${0.15 + (progress - shard.linkThreshold) * 0.75})`;
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(targetNode.x, targetNode.y);
+        ctx.stroke();
+        
+        // Draw tiny moving neural node signal along the link line
+        const linkPercent = (timestamp * 0.0015) % 1;
+        const sigX = sx + (targetNode.x - sx) * linkPercent;
+        const sigY = sy + (targetNode.y - sy) * linkPercent;
+        ctx.fillStyle = '#00f2fe';
+        ctx.beginPath();
+        ctx.arc(sigX, sigY, 1.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    });
+    
+    ctx.restore();
+  }
+
+  // Draw ambient volumetric god rays (atmosphere from Reference 2)
+  function drawLoaderLightRays(ctx, w, h, timestamp) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    
+    const rayCount = 4;
+    for (let i = 0; i < rayCount; i++) {
+      const angleOffset = Math.sin(timestamp * 0.0003 + i) * 0.04;
+      const xStart = (w / rayCount) * i + (w / rayCount) / 2 + Math.sin(timestamp * 0.00025 + i) * 15;
+      const rayWidth = 25 + Math.sin(timestamp * 0.0004 + i * 2) * 10;
+      
+      const grad = ctx.createLinearGradient(xStart, 0, xStart + Math.tan(angleOffset) * h, h);
+      grad.addColorStop(0, `rgba(127, 0, 255, ${0.012 + Math.sin(timestamp * 0.0008 + i) * 0.006})`);
+      grad.addColorStop(0.5, `rgba(0, 242, 254, ${0.016 + Math.cos(timestamp * 0.0006 + i) * 0.008})`);
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(xStart - rayWidth / 2, 0);
+      ctx.lineTo(xStart + rayWidth / 2, 0);
+      ctx.lineTo(xStart + Math.tan(angleOffset) * h + rayWidth, h);
+      ctx.lineTo(xStart + Math.tan(angleOffset) * h - rayWidth, h);
+      ctx.closePath();
+      ctx.fill();
+    }
     
     ctx.restore();
   }
@@ -370,13 +476,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const cx = 150, cy = 150;
     
     if (progress < 0.94) {
-      // 1. Draw concentric HUD rings
+      // 1. Draw ambient atmospheric god rays (Reference 2)
+      drawLoaderLightRays(introCtx, 300, 300, timestamp);
+
+      // 2. Draw concentric HUD rings (Reference 1)
       drawHUDGauges(introCtx, cx, cy, progress, timestamp);
       
-      // 2. Draw internal cyborg wireframe
+      // 3. Draw crystalline shards and neural connection lines (Reference 2)
+      drawLoaderShards(introCtx, progress, timestamp);
+      
+      // 4. Draw internal cyborg wireframe (Reference 1)
       drawCyborgWireframe(introCtx, cx, cy, progress, timestamp);
       
-      // 3. Draw green scanning sweep laser
+      // 5. Draw green scanning sweep laser
       drawScanningBeam(introCtx, 300, 300, timestamp);
     } else {
       // Climax burst when loader hits ~94%
@@ -616,8 +728,8 @@ document.addEventListener('DOMContentLoaded', () => {
     warpParticles.push(new WarpParticle());
   }
 
-  // 3. Floating 3D Cubes
-  class Cube3D {
+  // 3. Floating 3D Interconnected Crystals (Reference 2 style)
+  class Crystal3D {
     constructor(cx, cy, cz, size, color, rotSpeedX, rotSpeedY, rotSpeedZ) {
       this.cx = cx;
       this.cy = cy;
@@ -632,27 +744,25 @@ document.addEventListener('DOMContentLoaded', () => {
       this.rotSpeedZ = rotSpeedZ;
 
       const s = size / 2;
+      // Octahedron crystal shape: elongated vertical diamond
       this.vertices = [
-        {x: -s, y: -s, z: -s},
-        {x:  s, y: -s, z: -s},
-        {x:  s, y:  s, z: -s},
-        {x: -s, y:  s, z: -s},
-        {x: -s, y: -s, z:  s},
-        {x:  s, y: -s, z:  s},
-        {x:  s, y:  s, z:  s},
-        {x: -s, y:  s, z:  s}
+        {x: 0, y: -s * 1.5, z: 0},  // 0: Top tip
+        {x: 0, y: s * 1.5, z: 0},   // 1: Bottom tip
+        {x: -s, y: 0, z: -s},       // 2: Equatorial L-Back
+        {x: s, y: 0, z: -s},        // 3: Equatorial R-Back
+        {x: s, y: 0, z: s},         // 4: Equatorial R-Front
+        {x: -s, y: 0, z: s}         // 5: Equatorial L-Front
       ];
 
       this.edges = [
-        [0, 1], [1, 2], [2, 3], [3, 0],
-        [4, 5], [5, 6], [6, 7], [7, 4],
-        [0, 4], [1, 5], [2, 6], [3, 7]
+        [0, 2], [0, 3], [0, 4], [0, 5], // Top pyramid caps
+        [1, 2], [1, 3], [1, 4], [1, 5], // Bottom pyramid caps
+        [2, 3], [3, 4], [4, 5], [5, 2]  // Belt
       ];
 
       this.faces = [
-        [0, 1, 2, 3], [1, 5, 6, 2],
-        [5, 4, 7, 6], [4, 0, 3, 7],
-        [3, 2, 6, 7], [4, 5, 1, 0]
+        [0, 2, 3], [0, 3, 4], [0, 4, 5], [0, 5, 2], // Top pyramid faces
+        [1, 3, 2], [1, 4, 3], [1, 5, 4], [1, 2, 5]  // Bottom pyramid faces
       ];
     }
 
@@ -660,7 +770,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.rx += this.rotSpeedX;
       this.ry += this.rotSpeedY;
       this.rz += this.rotSpeedZ;
-      this.cz -= 1.0;
+      this.cz -= 1.2;
       if (this.cz < 120) {
         this.cz = 1200;
         this.cx = (Math.random() - 0.5) * 900;
@@ -685,7 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       ctx.save();
-      // Glass face fill
+      // Glass face transparent fill
       ctx.fillStyle = this.color.replace('rgb', 'rgba').replace('hsl', 'hsla').replace(')', ', 0.045)');
       this.faces.forEach(face => {
         ctx.beginPath();
@@ -697,7 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
       });
 
-      // Neon lines
+      // Neon wireframe borders
       ctx.strokeStyle = this.color;
       ctx.shadowBlur = 10;
       ctx.shadowColor = this.color;
@@ -709,7 +819,20 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.stroke();
       });
 
-      // Neon corner nodes
+      // Pulsing glowing center core sphere
+      const centerPt = project3D(this.cx, this.cy, this.cz, width, height, cp, cy);
+      if (centerPt) {
+        const pulse = 0.8 + Math.sin(performance.now() * 0.005 + this.cx) * 0.25;
+        const radius = Math.max(2, centerPt.scale * 0.02 * pulse);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = this.color;
+        ctx.beginPath();
+        ctx.arc(centerPt.x, centerPt.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Neon vertices nodes
       ctx.fillStyle = '#ffffff';
       ctx.shadowBlur = 4;
       ctx.shadowColor = '#ffffff';
@@ -719,26 +842,22 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
       });
 
-      // Coding hex label overlay
-      const avgX = screenPoints.reduce((sum, p) => sum + p.x, 0) / 8;
-      const avgY = screenPoints.reduce((sum, p) => sum + p.y, 0) / 8;
-      const scale = screenPoints.reduce((sum, p) => sum + p.scale, 0) / 8;
-
+      // Coding coordinate text overlay
+      const scale = screenPoints.reduce((sum, p) => sum + p.scale, 0) / 6;
       ctx.fillStyle = this.color;
       ctx.font = `600 ${Math.max(7, scale * 0.045)}px monospace`;
       ctx.shadowBlur = 0;
       ctx.globalAlpha = 0.45;
-      ctx.fillText("0x" + Math.floor(this.cz).toString(16).toUpperCase(), avgX - 22, avgY - 6);
-      ctx.fillText("SYS: " + Math.floor(this.cx), avgX - 26, avgY + 12);
+      ctx.fillText("0x" + Math.floor(this.cz).toString(16).toUpperCase(), centerPt.x - 22, centerPt.y - 12);
       ctx.restore();
     }
   }
 
   const cuboids = [
-    new Cube3D(-300, -200, 900, 60, 'hsl(182, 100%, 50%)', 0.008, 0.004, 0.002),
-    new Cube3D(350, -150, 1100, 70, 'hsl(272, 100%, 60%)', 0.003, 0.009, 0.005),
-    new Cube3D(-250, 220, 750, 50, 'hsl(332, 100%, 55%)', 0.006, 0.003, 0.008),
-    new Cube3D(280, 200, 1000, 65, 'hsl(182, 100%, 50%)', -0.004, 0.006, 0.003)
+    new Crystal3D(-300, -200, 900, 60, 'hsl(182, 100%, 50%)', 0.008, 0.004, 0.002),
+    new Crystal3D(350, -150, 1100, 70, 'hsl(272, 100%, 60%)', 0.003, 0.009, 0.005),
+    new Crystal3D(-250, 220, 750, 50, 'hsl(332, 100%, 55%)', 0.006, 0.003, 0.008),
+    new Crystal3D(280, 200, 1000, 65, 'hsl(182, 100%, 50%)', -0.004, 0.006, 0.003)
   ];
 
   // 4. Matrix Code Streams in 3D Space
@@ -834,6 +953,32 @@ document.addEventListener('DOMContentLoaded', () => {
     grad3.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = grad3;
     ctx.fillRect(0, 0, width, height);
+
+    // Volumetric vertical god rays in background (Reference 2 style)
+    ctx.save();
+    ctx.globalCompositeOperation = 'screen';
+    const rayCount = 5;
+    const scrollTime = timestamp ? timestamp * 0.00005 : 0;
+    for (let i = 0; i < rayCount; i++) {
+      const angle = Math.sin(scrollTime + i * 1.5) * 0.06;
+      const xStart = (width / rayCount) * i + (width / rayCount) / 2 + Math.sin(scrollTime * 0.8 + i) * 80;
+      const rWidth = 70 + Math.sin(scrollTime * 1.2 + i * 2) * 30;
+      
+      const gradR = ctx.createLinearGradient(xStart, 0, xStart + Math.tan(angle) * height, height);
+      gradR.addColorStop(0, `rgba(127, 0, 255, ${0.02 + Math.sin(scrollTime * 1.5 + i) * 0.012})`);
+      gradR.addColorStop(0.6, `rgba(0, 242, 254, ${0.015 + Math.cos(scrollTime * 1.1 + i) * 0.008})`);
+      gradR.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      
+      ctx.fillStyle = gradR;
+      ctx.beginPath();
+      ctx.moveTo(xStart - rWidth / 2, 0);
+      ctx.lineTo(xStart + rWidth / 2, 0);
+      ctx.lineTo(xStart + Math.tan(angle) * height + rWidth * 1.5, height);
+      ctx.lineTo(xStart + Math.tan(angle) * height - rWidth * 1.5, height);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
   }
 
   // Re-map mouse interpolation coordinates to camera pitch and yaw targets
@@ -861,12 +1006,64 @@ document.addEventListener('DOMContentLoaded', () => {
     camPitch += (targetCamPitch - camPitch) * 0.05;
   }
 
+  // Draw 3D Neural links between close floating crystals (Reference 2 style)
+  function drawNeuralWebLinks(ctx, width, height, cp, cy) {
+    ctx.save();
+    
+    for (let i = 0; i < cuboids.length; i++) {
+      const c1 = cuboids[i];
+      const p1 = project3D(c1.cx, c1.cy, c1.cz, width, height, cp, cy);
+      if (!p1) continue;
+
+      for (let j = i + 1; j < cuboids.length; j++) {
+        const c2 = cuboids[j];
+        
+        // Calculate 3D distance between crystals
+        const dx = c1.cx - c2.cx;
+        const dy = c1.cy - c2.cy;
+        const dz = c1.cz - c2.cz;
+        const dist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        
+        const threshold = 480;
+        if (dist < threshold) {
+          const p2 = project3D(c2.cx, c2.cy, c2.cz, width, height, cp, cy);
+          if (!p2) continue;
+          
+          // Draw alpha-faded laser link line
+          const opacity = (1 - dist / threshold) * 0.35 * (1 - Math.max(c1.cz, c2.cz) / 1200);
+          ctx.strokeStyle = `rgba(127, 0, 255, ${opacity})`;
+          ctx.lineWidth = 1.0;
+          ctx.shadowBlur = 4;
+          ctx.shadowColor = 'rgba(127, 0, 255, 0.5)';
+          
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+          
+          // Draw a small signal node traveling along this link
+          const time = performance.now() * 0.001;
+          const travel = (time + i * 0.5) % 1;
+          const sigX = p1.x + (p2.x - p1.x) * travel;
+          const sigY = p1.y + (p2.y - p1.y) * travel;
+          
+          ctx.fillStyle = 'rgba(0, 242, 254, 0.7)';
+          ctx.beginPath();
+          ctx.arc(sigX, sigY, 1.8, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+    
+    ctx.restore();
+  }
+
   // Unified VFX Render loop
   function loopVfx() {
     const w = vfxCanvas.width;
     const h = vfxCanvas.height;
 
-    // 1. Draw Static Backdrop Nebulas
+    // 1. Draw Backdrop Nebulas & Volumetric Rays
     drawNebulaBackdrop(vfxCtx, w, h, performance.now());
 
     // 2. Interpolate Camera Rotation based on Mouse
@@ -890,11 +1087,14 @@ document.addEventListener('DOMContentLoaded', () => {
       ring.draw(vfxCtx, w, h, camPitch, camYaw);
     });
 
-    // 6. Update & Draw Floating Cubes
+    // 6. Update & Draw Floating Crystals
     cuboids.forEach(cube => {
       cube.update();
       cube.draw(vfxCtx, w, h, camPitch, camYaw);
     });
+
+    // 7. Draw 3D Neural Web connections (Reference 2 style)
+    drawNeuralWebLinks(vfxCtx, w, h, camPitch, camYaw);
 
     requestAnimationFrame(loopVfx);
   }
