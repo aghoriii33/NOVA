@@ -2387,13 +2387,13 @@ html {
   
   /* Text Clipping Fixes for Small Screens */
   h1.hero-title {
-    font-size: clamp(1.8rem, 8vw, 2.5rem) !important; /* Fluidly scale down so words NEVER clip */
+    font-size: clamp(1.4rem, 6vw, 2.2rem) !important; /* Made even smaller for mobile aesthetics */
     line-height: 1.2;
     padding: 0 1rem;
-    word-break: break-word; /* Safety fallback */
+    word-break: break-word;
   }
   .hero-subtitle {
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important; /* Slightly smaller subtitle to match */
     padding: 0 1rem;
   }
   .section-title {
