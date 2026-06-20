@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Portfolio of lead developers MR HRICK & MR RTIYANA. Modern, premium web applications, frontend engineering, and immersive UI/UX design.">
+  <title>HRICK & RTIYANA | Premium Developer Portfolio</title>
+  <!-- Google Fonts: Space Grotesk (headings) and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="loading">
+
+  <!-- ================= DYNAMIC INTRO ANIMATION ================= -->
+  <div id="intro-overlay">
+    <div class="intro-content">
+      <canvas id="intro-canvas"></canvas>
+      <div class="intro-text">
+        <h1 class="intro-name">MR HRICK &amp; MR RTIYANA</h1>
+        <p class="intro-tagline">INNOVATIVE DIGITAL CRAFTSMEN</p>
+      </div>
+    </div>
+    <div class="intro-progress-bar">
+      <div class="intro-progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- ================= CINEMATIC VFX BACKGROUND ================= -->
+  <div id="vfx-container">
+    <canvas id="vfx-canvas"></canvas>
+  </div>
+
+  <!-- ================= HEADER / NAVIGATION ================= -->
+  <header id="main-header">
+    <div class="header-container">
+      <a href="#" class="logo">
+        <span class="logo-icon"></span>
+        <span class="logo-text">NOVA<span class="highlight">.</span></span>
+      </a>
+      
+      <nav id="nav-menu">
+        <ul>
+          <li><a href="#hero" class="nav-link active">Home</a></li>
+          <li><a href="#services" class="nav-link">Services</a></li>
+          <li><a href="#portfolio" class="nav-link">Projects</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#contact" class="btn btn-primary btn-sm">Hire Us</a>
+        <button id="menu-toggle" aria-label="Toggle Menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main>
+    
+    <!-- ================= HERO SECTION ================= -->
+    <section id="hero" class="hero-section">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="status-badge">
+            <span class="pulse-dot"></span>
+            Available for Freelance &amp; Contract Work
+          </div>
+          <h1>Crafting <span class="gradient-text">Premium</span> Digital Masterpieces</h1>
+          <p class="hero-lead">
+            We are <strong>MR HRICK</strong> &amp; <strong>MR RTIYANA</strong>. Lead developers, systems engineers, and creative UI/UX designers building immersive web platforms with pixel-perfect accuracy.
+          </p>
+          <div class="cta-group">
+            <a href="#contact" class="btn btn-primary btn-lg">Hire Us Now</a>
+            <a href="#portfolio" class="btn btn-outline btn-lg">View Our Work</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-item">
+              <span class="stat-num">99%</span>
+              <span class="stat-label">Job Success</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">50+</span>
+              <span class="stat-label">Projects Completed</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">5★</span>
+              <span class="stat-label">Client Rating</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="hero-visual">
+          <div class="cyber-shield-container">
+            <!-- 3D Holographic Cyber Portal Frame -->
+            <div class="portal-ring ring-1"></div>
+            <div class="portal-ring ring-2"></div>
+            <div class="portal-ring ring-3"></div>
+            <svg class="laptop-mockup" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Screen border -->
+              <rect x="80" y="30" width="640" height="400" rx="16" fill="url(#metal-gradient)" stroke="#1a1a2e" stroke-width="6"/>
+              <rect x="90" y="40" width="620" height="380" rx="8" fill="#04040a" />
+              <!-- Keyboard Base -->
+              <path d="M40 430H760C780 430 790 445 780 455L750 480C745 485 730 485 720 485H80C70 485 55 485 50 480L20 455C10 445 20 430 40 430Z" fill="url(#keyboard-gradient)" />
+              <rect x="340" y="435" width="120" height="6" rx="3" fill="#1e1e38" />
+              <rect x="360" y="455" width="80" height="15" rx="2" fill="#0c0c16" />
+              <!-- Inner Screen Visual -->
+              <g class="screen-content">
+                <!-- Grid background -->
+                <path d="M 90 200 L 710 200 M 90 250 L 710 250 M 90 300 L 710 300" stroke="#1f1f3a" stroke-width="1" />
+                <path d="M 250 40 L 250 420 M 400 40 L 400 420 M 550 40 L 550 420" stroke="#1f1f3a" stroke-width="1" />
+                <!-- Web mockup cards -->
+                <rect x="120" y="70" width="150" height="90" rx="8" fill="url(#card-grad-1)" opacity="0.8" />
+                <rect x="290" y="70" width="390" height="90" rx="8" fill="url(#card-grad-2)" opacity="0.8" />
+                <rect x="120" y="180" width="330" height="210" rx="8" fill="url(#card-grad-3)" opacity="0.8" />
+                <rect x="470" y="180" width="210" height="95" rx="8" fill="url(#card-grad-2)" opacity="0.8" />
+                <rect x="470" y="295" width="210" height="95" rx="8" fill="url(#card-grad-1)" opacity="0.8" />
+                <!-- Cyber Lines -->
+                <path d="M 140 115 L 200 115 M 140 125 L 230 125 M 310 100 L 450 100 M 310 115 L 380 115" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+                <circle cx="210" cy="285" r="45" fill="none" stroke="url(#accent-gradient)" stroke-width="4" stroke-dasharray="10 5" class="rotating-svg"/>
+                <path d="M 500 220 L 580 220 M 500 235 L 550 235" stroke="#00f2fe" stroke-width="3" stroke-linecap="round"/>
+              </g>
+              <!-- Gradients -->
+              <defs>
+                <linearGradient id="metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#3d3d5c"/>
+                  <stop offset="50%" stop-color="#1e1e2f"/>
+                  <stop offset="100%" stop-color="#0c0c14"/>
+                </linearGradient>
+                <linearGradient id="keyboard-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#282845"/>
+                  <stop offset="100%" stop-color="#0f0f1b"/>
+                </linearGradient>
+                <linearGradient id="card-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#7f00ff" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="#ff007f" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="card-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.2"/>
+                  <stop offset="100%" stop-color="#4facfe" stop-opacity="0.05"/>
+                </linearGradient>
+                <linearGradient id="card-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#121224"/>
+                  <stop offset="100%" stop-color="#090912"/>
+                </linearGradient>
+                <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f2fe"/>
+                  <stop offset="100%" stop-color="#7f00ff"/>
+                </linearGradient>
+              </defs>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SERVICES SECTION ================= -->
+    <section id="services" class="services-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subtitle">EXPERTISE</span>
+          <h2>Our Professional Services</h2>
+          <div class="header-line"></div>
+          <p class="section-desc">We deliver high-end digital solutions tailored to complex business requirements, matching the standard of top-tier talent platforms.</p>
+        </div>
+
+        <div class="services-grid">
+          <!-- Card 1 -->
+          <div class="service-card reveal-on-scroll">
+            <div class="service-icon-wrapper">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+                <polyline points="2 17 12 22 22 17"/>
+                <polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+            <h3>Frontend Development</h3>
+            <p>Building lightning-fast, fully responsive, and interactive user interfaces using cutting-edge browser technologies. Focus on clean architecture and smooth transitions.</p>
+            <ul class="service-features">
+              <li>Responsive Design Systems</li>
+              <li>Sleek Micro-animations</li>
+              <li>SEO-optimized semantic DOM</li>
+            </ul>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="service-card reveal-on-scroll">
+            <div class="service-icon-wrapper">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+                <path d="M12 6v6l4 2"/>
+              </svg>
+            </div>
+            <h3>Web Applications</h3>
+            <p>Developing scalable, secure, and complex cloud applications. Experienced in state management, real-time sync systems, API gateways, and custom database integrations.</p>
+            <ul class="service-features">
+              <li>Custom SPA &amp; Server-rendered Apps</li>
+              <li>Real-time WebSockets Integration</li>
+              <li>High-Performance Server Architecture</li>
+            </ul>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="service-card reveal-on-scroll">
+            <div class="service-icon-wrapper">
+              <svg class="service-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                <line x1="8" y1="21" x2="16" y2="21"/>
+                <line x1="12" y1="17" x2="12" y2="21"/>
+              </svg>
+            </div>
+            <h3>UI/UX Architecture</h3>
+            <p>Designing sophisticated layouts, high-fidelity wireframes, and cohesive design systems. Merging client goals with user psychology to deliver conversion-focused UX.</p>
+            <ul class="service-features">
+              <li>Interactive Interactive Wireframes</li>
+              <li>Color Theory &amp; Sleek Brand Layouts</li>
+              <li>User Journey &amp; Usability Mapping</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PORTFOLIO SECTION ================= -->
+    <section id="portfolio" class="portfolio-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subtitle">PROJECTS</span>
+          <h2>Featured Showcase</h2>
+          <div class="header-line"></div>
+          <p class="section-desc">Explore our custom-built products. Each project represents standard-setting quality, custom graphics, and robust functionality.</p>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="portfolio-filters">
+          <button class="filter-btn active" data-filter="all">All Projects</button>
+          <button class="filter-btn" data-filter="web">Web Apps</button>
+          <button class="filter-btn" data-filter="ui">UI/UX Design</button>
+          <button class="filter-btn" data-filter="frontend">Frontend</button>
+        </div>
+
+        <!-- Projects grid -->
+        <div class="portfolio-grid">
+          <!-- Card 1 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="web">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#070712" />
+                  <!-- Grid -->
+                  <path d="M 0 50 L 400 50 M 0 100 L 400 100 M 0 150 L 400 150 M 0 200 L 400 200" stroke="#16162a" stroke-width="1"/>
+                  <path d="M 100 0 L 100 250 M 200 0 L 200 250 M 300 0 L 300 250" stroke="#16162a" stroke-width="1"/>
+                  <!-- Chart elements -->
+                  <path d="M 50 180 L 120 140 L 190 160 L 260 100 L 330 120 L 380 60" fill="none" stroke="#00f2fe" stroke-width="4" stroke-linecap="round"/>
+                  <path d="M 50 180 L 120 140 L 190 160 L 260 100 L 330 120 L 380 60 L 380 220 L 50 220 Z" fill="url(#area-grad)" opacity="0.2"/>
+                  <!-- Glowing dots -->
+                  <circle cx="260" cy="100" r="6" fill="#00f2fe" filter="drop-shadow(0px 0px 8px #00f2fe)"/>
+                  <circle cx="380" cy="60" r="6" fill="#7f00ff" filter="drop-shadow(0px 0px 8px #7f00ff)"/>
+                  <defs>
+                    <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#00f2fe"/>
+                      <stop offset="100%" stop-color="#00f2fe" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">Web Application</span>
+                  <h3>Aether Analytics Dashboard</h3>
+                  <p>Real-time telemetry &amp; business intelligence engine with dynamic web components.</p>
+                  <a href="#" class="view-project-link" data-project-id="1">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Aether Dashboard</h3>
+                <p>Node.js, CanvasAPI, WebSockets</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="ui">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#0a0314" />
+                  <!-- Dynamic circles / UI -->
+                  <circle cx="200" cy="125" r="70" fill="none" stroke="#7f00ff" stroke-width="1.5" opacity="0.5"/>
+                  <circle cx="200" cy="125" r="90" fill="none" stroke="#ff007f" stroke-width="1" stroke-dasharray="8 4" opacity="0.3"/>
+                  <!-- UI buttons -->
+                  <rect x="120" y="110" width="160" height="30" rx="15" fill="url(#btn-grad)" />
+                  <text x="200" y="129" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="12" font-weight="600" text-anchor="middle" letter-spacing="1">LAUNCH APP</text>
+                  <!-- Orbs -->
+                  <circle cx="100" cy="70" r="20" fill="url(#orb-grad-1)" filter="blur(5px)"/>
+                  <circle cx="300" cy="180" r="30" fill="url(#orb-grad-2)" filter="blur(8px)"/>
+                  <defs>
+                    <linearGradient id="btn-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#ff007f"/>
+                      <stop offset="100%" stop-color="#7f00ff"/>
+                    </linearGradient>
+                    <radialGradient id="orb-grad-1">
+                      <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.6"/>
+                      <stop offset="100%" stop-color="#00f2fe" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="orb-grad-2">
+                      <stop offset="0%" stop-color="#ff007f" stop-opacity="0.5"/>
+                      <stop offset="100%" stop-color="#ff007f" stop-opacity="0"/>
+                    </radialGradient>
+                  </defs>
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">UI/UX Design</span>
+                  <h3>Vespera Portal UX</h3>
+                  <p>Design guidelines &amp; assets for a next-generation Web3 visual portal.</p>
+                  <a href="#" class="view-project-link" data-project-id="2">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Vespera Portal</h3>
+                <p>Figma, Creative Assets, HSL Palettes</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="frontend">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#040b11" />
+                  <!-- Matrix waves / digital grid -->
+                  <path d="M 20 220 Q 100 100 200 220 T 380 220" fill="none" stroke="#39ff14" stroke-width="2" stroke-dasharray="5 5" opacity="0.6"/>
+                  <path d="M 20 180 Q 100 60 200 180 T 380 180" fill="none" stroke="#00f2fe" stroke-width="1.5" opacity="0.4"/>
+                  <!-- Card mockup -->
+                  <rect x="130" y="60" width="140" height="80" rx="6" fill="#0a192f" stroke="#39ff14" stroke-width="1"/>
+                  <line x1="145" y1="80" x2="200" y2="80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                  <line x1="145" y1="95" x2="240" y2="95" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+                  <line x1="145" y1="110" x2="220" y2="110" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+                  <circle cx="235" cy="80" r="10" fill="#39ff14" opacity="0.3"/>
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">Frontend</span>
+                  <h3>Synapse Interactive Client</h3>
+                  <p>Cyberpunk-styled terminal interface with lightweight animations.</p>
+                  <a href="#" class="view-project-link" data-project-id="3">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Synapse Client</h3>
+                <p>CSS Grid, GSAP Engine, HTML5</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="web">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#0c0702" />
+                  <!-- Isometric shapes -->
+                  <path d="M 200 60 L 290 110 L 200 160 L 110 110 Z" fill="#ff7b00" opacity="0.2"/>
+                  <path d="M 200 60 L 200 160 M 290 110 M 110 110" stroke="#ff7b00" stroke-width="1.5"/>
+                  <!-- Top cube -->
+                  <path d="M 200 80 L 240 100 L 200 120 L 160 100 Z" fill="#ff7b00" stroke="#ffffff" stroke-width="1"/>
+                  <path d="M 160 100 L 160 135 L 200 155 L 200 120 Z" fill="#e66f00" stroke="#ffffff" stroke-width="1"/>
+                  <path d="M 240 100 L 240 135 L 200 155 L 200 120 Z" fill="#b35600" stroke="#ffffff" stroke-width="1"/>
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">Web Application</span>
+                  <h3>Helios Blockchain Ledger</h3>
+                  <p>Visual blockchain explorer showing nodes, blocks, and ledger telemetry.</p>
+                  <a href="#" class="view-project-link" data-project-id="4">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Helios Ledger</h3>
+                <p>React Native, Solidity Web3, JS</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="ui">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#0f0b1a" />
+                  <!-- UI cards overlapping -->
+                  <rect x="60" y="50" width="160" height="110" rx="8" fill="#1b1236" opacity="0.7" stroke="#9d4edd" stroke-width="1"/>
+                  <rect x="180" y="90" width="160" height="110" rx="8" fill="#241947" stroke="#c77dff" stroke-width="1"/>
+                  <!-- Elements in card -->
+                  <circle cx="210" cy="120" r="15" fill="#e0aaff" />
+                  <rect x="235" y="112" width="70" height="6" rx="3" fill="#ffffff" />
+                  <rect x="235" y="125" width="40" height="4" rx="2" fill="#ffffff" opacity="0.5" />
+                  <rect x="200" y="150" width="120" height="30" rx="6" fill="#9d4edd" />
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">UI/UX Design</span>
+                  <h3>Nebula Design System</h3>
+                  <p>A multi-theme library design system built for complex dashboard web environments.</p>
+                  <a href="#" class="view-project-link" data-project-id="5">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Nebula Design System</h3>
+                <p>UI Engineering, HSL Guidelines</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="portfolio-item reveal-on-scroll" data-category="frontend">
+            <div class="project-card">
+              <div class="project-visual">
+                <!-- SVG Canvas Mockup -->
+                <svg class="project-mock" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="400" height="250" rx="12" fill="#050505" />
+                  <!-- Grid layout overlay -->
+                  <line x1="50" y1="0" x2="50" y2="250" stroke="#1c1c1c" stroke-width="2"/>
+                  <line x1="350" y1="0" x2="350" y2="250" stroke="#1c1c1c" stroke-width="2"/>
+                  <circle cx="200" cy="125" r="60" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.2"/>
+                  <line x1="200" y1="30" x2="200" y2="220" stroke="#ff0055" stroke-width="1.5" stroke-dasharray="4 4" />
+                  <!-- Text glyphs -->
+                  <text x="200" y="130" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="14" font-weight="700" text-anchor="middle" letter-spacing="4">KINETIC ENGINE</text>
+                </svg>
+                <div class="project-overlay">
+                  <span class="project-cat">Frontend</span>
+                  <h3>Orion Landing System</h3>
+                  <p>Visual site design with high-performance CSS transforms and smooth loading states.</p>
+                  <a href="#" class="view-project-link" data-project-id="6">Explore Details &rarr;</a>
+                </div>
+              </div>
+              <div class="project-info">
+                <h3>Orion Landing Page</h3>
+                <p>Tailored CSS, Semantic Elements</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ABOUT ME SECTION ================= -->
+    <section id="about" class="about-section">
+      <div class="container">
+        <div class="about-grid">
+          <!-- Column 1: Info and timeline -->
+          <div class="about-info reveal-on-scroll">
+            <span class="subtitle">WHO WE ARE</span>
+            <h2>Architecting Digital Excellence</h2>
+            <div class="header-line"></div>
+            <p>
+              We are <strong>MR HRICK</strong> &amp; <strong>MR RTIYANA</strong>, high-performance web engineers dedicated to building clean, accessible, and fast web portals. Drawing inspiration from freelance platform standards like Freelancer and Upwork, we focus on delivery excellence, clear client communication, and reliable software architecture.
+            </p>
+            <p>
+              Our background combines rigorous backend systems design, semantic HTML layouts, and beautiful frontends, offering clients a comprehensive solution under a single unified team structure.
+            </p>
+
+            <!-- Timeline -->
+            <div class="timeline">
+              <h3 class="timeline-title">Career Milestones</h3>
+              
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <span class="timeline-date">2024 - Present</span>
+                  <h4>Senior System Architects &amp; Founders</h4>
+                  <p>Co-founded NOVA Studio, building complex dashboards, blockchain solutions, and high-performance WebGL platforms for international clients.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <span class="timeline-date">2022 - 2024</span>
+                  <h4>Lead Engineers (Freelance Core)</h4>
+                  <p>Completed over 40 high-value contracts on premier talent platforms, maintaining a 99% Job Success Score.</p>
+                </div>
+              </div>
+
+              <div class="timeline-item">
+                <div class="timeline-marker"></div>
+                <div class="timeline-content">
+                  <span class="timeline-date">2020 - 2022</span>
+                  <h4>Fullstack Software Developers</h4>
+                  <p>Designed scalable web portals, dynamic interfaces, and microservices for fintech and analytics firms.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Photo and skills -->
+          <div class="about-skills-wrapper reveal-on-scroll">
+            <!-- Glowing Photo/Frame -->
+            <div class="profile-frame">
+              <div class="profile-glow"></div>
+              <div class="profile-inner">
+                <!-- Abstract Creative Vector Portrait SVG -->
+                <svg class="profile-svg" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="gradient-avatar" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#00f2fe"/>
+                      <stop offset="50%" stop-color="#7f00ff"/>
+                      <stop offset="100%" stop-color="#ff007f"/>
+                    </linearGradient>
+                    <pattern id="mesh-grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#261b47" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <!-- Grid BG inside shield -->
+                  <circle cx="150" cy="150" r="120" fill="url(#mesh-grid)" stroke="url(#gradient-avatar)" stroke-width="3" />
+                  <!-- Futuristic Avatar/Icon shapes -->
+                  <path d="M150 70 L210 160 H90 Z" fill="none" stroke="url(#gradient-avatar)" stroke-width="4" stroke-linejoin="round" />
+                  <circle cx="150" cy="120" r="22" fill="#080811" stroke="#00f2fe" stroke-width="3" />
+                  <rect x="110" y="170" width="80" height="40" rx="10" fill="#080811" stroke="#ff007f" stroke-width="2" />
+                  <!-- Nodes floating -->
+                  <circle cx="70" cy="90" r="5" fill="#39ff14" filter="drop-shadow(0px 0px 4px #39ff14)" />
+                  <circle cx="230" cy="80" r="7" fill="#00f2fe" filter="drop-shadow(0px 0px 4px #00f2fe)" />
+                  <circle cx="220" cy="220" r="6" fill="#7f00ff" filter="drop-shadow(0px 0px 4px #7f00ff)" />
+                  <path d="M 70 95 L 120 120 M 220 85 L 170 110 M 150 215 L 150 240" stroke="#ffffff" stroke-width="1.5" stroke-dasharray="4 2" opacity="0.5" />
+                  <!-- Text overlay inside -->
+                  <text x="150" y="275" fill="#ffffff" font-family="'Space Grotesk', sans-serif" font-size="16" font-weight="700" text-anchor="middle" letter-spacing="2">H &amp; R CREATIVE</text>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Skills bars -->
+            <div class="skills-container">
+              <h3>Core Technical Capabilities</h3>
+              
+              <div class="skill-bar-wrapper">
+                <div class="skill-info">
+                  <span class="skill-name">Frontend Architecture (HTML5, JS, React/Next)</span>
+                  <span class="skill-percent">95%</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-fill" data-progress="95%"></div>
+                </div>
+              </div>
+
+              <div class="skill-bar-wrapper">
+                <div class="skill-info">
+                  <span class="skill-name">Creative UI/UX &amp; Vector Styling</span>
+                  <span class="skill-percent">90%</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-fill" data-progress="90%"></div>
+                </div>
+              </div>
+
+              <div class="skill-bar-wrapper">
+                <div class="skill-info">
+                  <span class="skill-name">Backend &amp; Node Systems Engineering</span>
+                  <span class="skill-percent">88%</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-fill" data-progress="88%"></div>
+                </div>
+              </div>
+
+              <div class="skill-bar-wrapper">
+                <div class="skill-info">
+                  <span class="skill-name">Canvas WebGL &amp; VFX Animation</span>
+                  <span class="skill-percent">85%</span>
+                </div>
+                <div class="skill-bar">
+                  <div class="skill-fill" data-progress="85%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CONTACT SECTION ================= -->
+    <section id="contact" class="contact-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="subtitle">GET IN TOUCH</span>
+          <h2>Start a Project</h2>
+          <div class="header-line"></div>
+          <p class="section-desc">Have a challenge for us? Drop a line via the secure form below or email us directly. Let's build something exceptional.</p>
+        </div>
+
+        <div class="contact-grid">
+          <!-- Info Details -->
+          <div class="contact-details reveal-on-scroll">
+            <h3>Direct Channels</h3>
+            <p>Connect with the creators. We reply within 12 hours.</p>
+            
+            <div class="contact-methods">
+              <div class="method-item">
+                <div class="method-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div class="method-info">
+                  <span class="method-label">MR HRICK</span>
+                  <a href="mailto:kundurick781@gmail.com" class="method-link">kundurick781@gmail.com</a>
+                </div>
+              </div>
+
+              <div class="method-item">
+                <div class="method-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                </div>
+                <div class="method-info">
+                  <span class="method-label">MR RTIYANA</span>
+                  <a href="mailto:kaitristan312@gmail.com" class="method-link">kaitristan312@gmail.com</a>
+                </div>
+              </div>
+
+              <div class="method-item">
+                <div class="method-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                  </svg>
+                </div>
+                <div class="method-info">
+                  <span class="method-label">GitHub Repository</span>
+                  <a href="https://github.com/aghoriii33/NOVA" target="_blank" rel="noopener noreferrer" class="method-link">github.com/aghoriii33/NOVA</a>
+                </div>
+              </div>
+            </div>
+
+            <div class="trust-badge">
+              <h4>Why collaborate with us?</h4>
+              <p>We combine freelancer speed with enterprise software standards. Guaranteed daily updates, robust code, and structured delivery pipelines.</p>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="contact-form-wrapper reveal-on-scroll">
+            <form id="contact-form" autocomplete="off">
+              <div class="form-row">
+                <div class="form-group">
+                  <input type="text" id="form-name" required placeholder=" ">
+                  <label for="form-name">Full Name</label>
+                  <span class="input-line"></span>
+                </div>
+                <div class="form-group">
+                  <input type="email" id="form-email" required placeholder=" ">
+                  <label for="form-email">Email Address</label>
+                  <span class="input-line"></span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <input type="text" id="form-subject" required placeholder=" ">
+                <label for="form-subject">Subject</label>
+                <span class="input-line"></span>
+              </div>
+
+              <div class="form-group">
+                <textarea id="form-message" required placeholder=" " rows="5"></textarea>
+                <label for="form-message">Your Message</label>
+                <span class="input-line"></span>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+                <span class="btn-text">Submit Message</span>
+                <span class="btn-loader"></span>
+              </button>
+              
+              <div id="form-status" class="form-status"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= PORTFOLIO DETAILS MODAL ================= -->
+  <div id="project-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" aria-label="Close modal">&times;</button>
+      <div class="modal-body">
+        <!-- Dynamically injected content -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer id="main-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">
+          <span class="logo-icon"></span>
+          <span class="logo-text">NOVA<span class="highlight">.</span></span>
+        </a>
+        <p>Creating high-performance visual portals, scalable SaaS apps, and immersive user experiences.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#portfolio">Projects</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+      </div>
+      <div class="footer-creators">
+        <h4>Creators</h4>
+        <p><strong>MR HRICK</strong> &amp; <strong>MR RTIYANA</strong></p>
+        <p>All Rights Reserved &copy; <span id="copyright-year">2026</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
