@@ -571,11 +571,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     draw(ctx, width, height, cp, cy) {
-      const segments = 120;
+      // Lower poly count for rings on mobile
+      const segments = isMobile ? 60 : 120;
       ctx.save();
       ctx.strokeStyle = this.color;
       ctx.lineWidth = 1.8;
-      ctx.shadowBlur = 10;
+      ctx.shadowBlur = isMobile ? 0 : 10;
       ctx.shadowColor = this.color;
       
       // Draw outer circle
@@ -834,12 +835,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // Less crystals on mobile to save math
+  const crystalCount = isMobile ? 2 : 4;
   const cuboids = [
     new Crystal3D(-300, -200, 900, 60, 'hsl(182, 100%, 50%)', 0.008, 0.004, 0.002),
     new Crystal3D(350, -150, 1100, 70, 'hsl(272, 100%, 60%)', 0.003, 0.009, 0.005),
     new Crystal3D(-250, 220, 750, 50, 'hsl(332, 100%, 55%)', 0.006, 0.003, 0.008),
     new Crystal3D(280, 200, 1000, 65, 'hsl(182, 100%, 50%)', -0.004, 0.006, 0.003)
-  ];
+  ].slice(0, crystalCount);
 
   // 4. Matrix Code Streams in 3D Space
   class CodeStream3D {
@@ -1040,28 +1043,22 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Unified VFX Render loop — optimized for 120Hz on mobile
-  // On mobile skip heavy 3D crystals/rings/codestreams; keep starfield only
   let vfxLastFrame = 0;
   function loopVfx(ts) {
     requestAnimationFrame(loopVfx);
 
-    // On low-end mobile cap at 60fps to prevent thermal throttle
-    if (isMobile && ts - vfxLastFrame < 14) return; // ~72fps gate
+    // Skip frame if rendering too fast (throttle to ~72fps max on mobile battery)
+    if (isMobile && ts - vfxLastFrame < 12) return; 
     vfxLastFrame = ts;
 
     const w = window.innerWidth;
     const h = window.innerHeight;
 
-    // 1. Draw Backdrop Nebulas (simplified on mobile)
-    if (isMobile) {
-      vfxCtx.fillStyle = '#020205';
-      vfxCtx.fillRect(0, 0, w, h);
-    } else {
-      drawNebulaBackdrop(vfxCtx, w, h, ts);
-    }
+    // 1. Draw Backdrop Nebulas
+    drawNebulaBackdrop(vfxCtx, w, h, ts);
 
-    // 2. Camera physics (skip on mobile — no mouse tracking on touch)
-    if (!isMobile) updateCamRotationPhysics();
+    // 2. Camera physics (gentle drift on mobile)
+    updateCamRotationPhysics();
 
     // 3. Code Streams
     codeStreams.forEach(stream => {
@@ -1069,18 +1066,20 @@ document.addEventListener('DOMContentLoaded', () => {
       stream.draw(vfxCtx, w, h, camPitch, camYaw);
     });
 
-    // 4. Warp Particles — always drawn
+    // 4. Warp Particles
     warpParticles.forEach(p => {
       p.update();
       p.draw(vfxCtx, w, h, camPitch, camYaw);
     });
 
-    // 5–7. Heavy 3D: desktop only
-    if (!isMobile) {
-      portalRings.forEach(ring => { ring.update(); ring.draw(vfxCtx, w, h, camPitch, camYaw); });
-      cuboids.forEach(cube => { cube.update(); cube.draw(vfxCtx, w, h, camPitch, camYaw); });
-      drawNeuralWebLinks(vfxCtx, w, h, camPitch, camYaw);
-    }
+    // 5. Update & Draw Concentric Rings
+    portalRings.forEach(ring => { ring.update(); ring.draw(vfxCtx, w, h, camPitch, camYaw); });
+
+    // 6. Update & Draw Floating Crystals
+    cuboids.forEach(cube => { cube.update(); cube.draw(vfxCtx, w, h, camPitch, camYaw); });
+
+    // 7. Draw 3D Neural Web connections
+    drawNeuralWebLinks(vfxCtx, w, h, camPitch, camYaw);
   }
 
   // Launch VFX Loop
