@@ -2054,3 +2054,240 @@ h1, h2, h3, h4 {
     box-shadow: none;
   }
 }
+
+/* ==========================================================================
+   ASSASSIN'S CREED AUTH & LOGIN SYSTEM
+   ========================================================================== */
+:root {
+  --ac-gold: #d4af37;
+  --ac-gold-rgb: 212, 175, 55;
+  --ac-parchment: #f0e6c0;
+  --ac-dark: #07070a;
+  --ac-glow: 0 0 15px rgba(212, 175, 55, 0.35);
+  --ac-border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+/* Header Auth Profile */
+.auth-profile-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--ac-gold);
+  box-shadow: var(--ac-glow);
+  object-fit: cover;
+}
+
+.user-name {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ac-parchment);
+  letter-spacing: 0.05em;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Auth Modal Specifics */
+.auth-modal-content {
+  max-width: 420px !important;
+  border: var(--ac-border) !important;
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), var(--ac-glow) !important;
+  padding: 2.5rem 2rem !important;
+  position: relative;
+  background: var(--ac-dark) !important;
+}
+
+/* AC Emblem Background Decorator */
+.auth-modal-content::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 250px;
+  height: 250px;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none" stroke="rgba(212,175,55,0.03)" stroke-width="1.5"><path d="M150,30 L50,160 L90,160 L120,110 L150,160 L180,110 L210,160 L250,160 Z"/><path d="M150,270 C100,220 50,160 50,160 C50,160 100,200 150,200 C200,200 250,160 250,160 C250,160 200,220 150,270 Z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.auth-modal-body {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tabs */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-tab-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 0.75rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: var(--transition-fast);
+  text-align: center;
+  border-bottom: 2px solid transparent;
+}
+
+.auth-tab-btn:hover {
+  color: var(--ac-parchment);
+}
+
+.auth-tab-btn.active {
+  color: var(--ac-gold);
+  border-bottom-color: var(--ac-gold);
+  text-shadow: var(--ac-glow);
+}
+
+/* Form Styles */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.auth-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: left;
+}
+
+.auth-form-group label {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ac-parchment);
+}
+
+.auth-form-group input {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem 1rem;
+  color: var(--text-light);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: var(--transition-fast);
+}
+
+.auth-form-group input:focus {
+  border-color: var(--ac-gold);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-family: var(--font-heading);
+  letter-spacing: 0.1em;
+}
+
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+.auth-divider:not(:empty)::before {
+  margin-right: .75em;
+}
+
+.auth-divider:not(:empty)::after {
+  margin-left: .75em;
+}
+
+/* Custom Alert Messages */
+.auth-message {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+  min-height: 1.25rem;
+  font-weight: 550;
+  display: none;
+}
+
+.auth-message.success {
+  display: block;
+  color: var(--color-success);
+}
+
+.auth-message.error {
+  display: block;
+  color: var(--color-accent);
+}
+
+/* Button overrides for Auth */
+.auth-modal-content .btn-primary {
+  background: var(--ac-gold);
+  color: var(--bg-darker);
+  border: 1px solid var(--ac-gold);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.8rem;
+  box-shadow: none;
+  cursor: pointer;
+}
+
+.auth-modal-content .btn-primary:hover {
+  background: transparent;
+  color: var(--ac-gold);
+  box-shadow: var(--ac-glow);
+}
+
+.auth-modal-content .btn-outline {
+  border-color: rgba(212, 175, 55, 0.4);
+  color: var(--ac-parchment);
+  cursor: pointer;
+}
+
+.auth-modal-content .btn-outline:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--ac-gold);
+}
+
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}

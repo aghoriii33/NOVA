@@ -1912,4 +1912,291 @@ document.addEventListener('DOMContentLoaded', () => {
   if (copyrightYear) {
     copyrightYear.textContent = new Date().getFullYear();
   }
+
+  /* ==========================================================================
+     3. ASSASSIN'S CREED THEMED FIREBASE AUTHENTICATION SYSTEM
+     ========================================================================== */
+  
+  // REPLACE this with your actual Firebase config from the Firebase Console!
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY_HERE",
+    authDomain: "YOUR_PROJECT_ID_HERE.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID_HERE",
+    storageBucket: "YOUR_PROJECT_ID_HERE.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID_HERE",
+    appId: "YOUR_APP_ID_HERE"
+  };
+
+  // Initialize Firebase (only if config is filled and firebase is available)
+  let auth = null;
+  const isFirebaseConfigured = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY_HERE";
+
+  if (typeof firebase !== 'undefined') {
+    try {
+      if (isFirebaseConfigured) {
+        firebase.initializeApp(firebaseConfig);
+        auth = firebase.auth();
+      } else {
+        console.warn("Firebase Auth: Please configure your firebaseConfig credentials in script.js to enable the login system.");
+      }
+    } catch (err) {
+      console.error("Firebase initialization failed:", err);
+    }
+  }
+
+  // Auth UI Elements
+  const authModal = document.getElementById('auth-modal');
+  const authLoginBtn = document.getElementById('auth-login-btn');
+  const authProfile = document.getElementById('auth-profile');
+  const userAvatar = document.getElementById('user-avatar');
+  const userName = document.getElementById('user-name');
+  const authLogoutBtn = document.getElementById('auth-logout-btn');
+  const authModalClose = document.getElementById('auth-modal-close');
+  const authTabs = document.querySelectorAll('.auth-tab-btn');
+  const signinForm = document.getElementById('signin-form');
+  const signupForm = document.getElementById('signup-form');
+  const googleSigninBtn = document.getElementById('google-signin-btn');
+  const authMessage = document.getElementById('auth-message');
+
+  // Helper to show messages inside the modal
+  function showAuthMessage(msg, type = 'error') {
+    if (authMessage) {
+      authMessage.textContent = msg;
+      authMessage.className = 'auth-message ' + type;
+      authMessage.style.display = 'block';
+    }
+  }
+
+  function clearAuthMessage() {
+    if (authMessage) {
+      authMessage.textContent = '';
+      authMessage.style.display = 'none';
+    }
+  }
+
+  // Check if Firebase is available
+  function checkFirebase() {
+    if (typeof firebase === 'undefined') {
+      showAuthMessage("Firebase SDK failed to load. Check your internet connection.");
+      return false;
+    }
+    if (!isFirebaseConfigured) {
+      showAuthMessage("Authentication requires setup. Please update firebaseConfig in script.js.");
+      return false;
+    }
+    if (!auth) {
+      auth = firebase.auth();
+    }
+    return true;
+  }
+
+  // Open Modal
+  if (authLoginBtn) {
+    authLoginBtn.addEventListener('click', () => {
+      clearAuthMessage();
+      if (authModal) {
+        authModal.classList.add('open');
+      }
+      document.body.style.overflow = 'hidden'; // Lock scrolling
+    });
+  }
+
+  // Close Modal
+  if (authModalClose) {
+    authModalClose.addEventListener('click', () => {
+      if (authModal) {
+        authModal.classList.remove('open');
+      }
+      document.body.style.overflow = ''; // Unlock scrolling
+    });
+  }
+
+  // Close modal when clicking outside content
+  if (authModal) {
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal) {
+        authModal.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  // Switch Tabs (Sign In / Register)
+  authTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      authTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      clearAuthMessage();
+
+      const activeTab = tab.getAttribute('data-tab');
+      if (activeTab === 'signin') {
+        if (signinForm) signinForm.style.display = 'flex';
+        if (signupForm) signupForm.style.display = 'none';
+      } else {
+        if (signinForm) signinForm.style.display = 'none';
+        if (signupForm) signupForm.style.display = 'flex';
+      }
+    });
+  });
+
+  // Handle Email & Password Sign In
+  if (signinForm) {
+    signinForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearAuthMessage();
+      if (!checkFirebase()) return;
+
+      const email = document.getElementById('signin-email').value;
+      const password = document.getElementById('signin-password').value;
+
+      const submitBtn = signinForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.textContent : "Sign In";
+      if (submitBtn) {
+        submitBtn.textContent = "Signing In...";
+        submitBtn.disabled = true;
+      }
+
+      auth.signInWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          showAuthMessage("Sign in successful!", "success");
+          setTimeout(() => {
+            if (authModal) authModal.classList.remove('open');
+            document.body.style.overflow = '';
+            signinForm.reset();
+          }, 1000);
+        })
+        .catch((error) => {
+          showAuthMessage(error.message);
+        })
+        .finally(() => {
+          if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
+        });
+    });
+  }
+
+  // Handle Email & Password Register (Sign Up)
+  if (signupForm) {
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      clearAuthMessage();
+      if (!checkFirebase()) return;
+
+      const nameVal = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+
+      const submitBtn = signupForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn ? submitBtn.textContent : "Create Account";
+      if (submitBtn) {
+        submitBtn.textContent = "Creating...";
+        submitBtn.disabled = true;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          // Update profile display name
+          return user.updateProfile({
+            displayName: nameVal
+          }).then(() => {
+            // Force state update to refresh UI immediately
+            updateAuthUI(user);
+            showAuthMessage("Account created successfully!", "success");
+            setTimeout(() => {
+              if (authModal) authModal.classList.remove('open');
+              document.body.style.overflow = '';
+              signupForm.reset();
+            }, 1000);
+          });
+        })
+        .catch((error) => {
+          showAuthMessage(error.message);
+        })
+        .finally(() => {
+          if (submitBtn) {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+          }
+        });
+    });
+  }
+
+  // Handle Google Sign In
+  if (googleSigninBtn) {
+    googleSigninBtn.addEventListener('click', () => {
+      clearAuthMessage();
+      if (!checkFirebase()) return;
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          showAuthMessage("Google Login successful!", "success");
+          setTimeout(() => {
+            if (authModal) authModal.classList.remove('open');
+            document.body.style.overflow = '';
+          }, 1000);
+        })
+        .catch((error) => {
+          showAuthMessage(error.message);
+        });
+    });
+  }
+
+  // Handle Logout
+  if (authLogoutBtn) {
+    authLogoutBtn.addEventListener('click', () => {
+      if (!checkFirebase()) return;
+      auth.signOut()
+        .then(() => {
+          console.log("Logged out successfully");
+        })
+        .catch((error) => {
+          console.error("Logout failed:", error);
+        });
+    });
+  }
+
+  // Dynamic UI updates based on Auth State
+  function updateAuthUI(user) {
+    if (user) {
+      // User is signed in
+      if (authLoginBtn) authLoginBtn.style.display = 'none';
+      if (authProfile) authProfile.style.display = 'flex';
+
+      // Set user name
+      if (userName) {
+        userName.textContent = user.displayName || user.email.split('@')[0];
+      }
+
+      // Set user avatar. If no photoURL is available, use a premium default avatar
+      if (userAvatar) {
+        if (user.photoURL) {
+          userAvatar.src = user.photoURL;
+        } else {
+          // A premium gold/black placeholder avatar using inline SVG data URI
+          userAvatar.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="%2307070a" stroke="%23d4af37" stroke-width="2"/><circle cx="50" cy="38" r="18" fill="%23d4af37"/><path d="M22 78 C25 60, 38 52, 50 52 C62 52, 75 60, 78 78 Z" fill="%23d4af37"/></svg>';
+        }
+      }
+    } else {
+      // User is signed out
+      if (authLoginBtn) authLoginBtn.style.display = 'inline-block';
+      if (authProfile) authProfile.style.display = 'none';
+      if (userName) userName.textContent = '';
+      if (userAvatar) userAvatar.src = '';
+    }
+  }
+
+  // Listen for Auth State changes
+  if (typeof firebase !== 'undefined' && isFirebaseConfigured) {
+    try {
+      firebase.auth().onAuthStateChanged((user) => {
+        updateAuthUI(user);
+      });
+    } catch (e) {
+      console.error("Auth state listener setup failed:", e);
+    }
+  }
 });
