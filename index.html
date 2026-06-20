@@ -15,13 +15,34 @@
 
   <!-- ================= DYNAMIC INTRO ANIMATION ================= -->
   <div id="intro-overlay">
+    <!-- Split shutter panels -->
+    <div class="shutter shutter-left"></div>
+    <div class="shutter shutter-right"></div>
+    
     <div class="intro-content">
-      <canvas id="intro-canvas"></canvas>
+      <div class="scanner-container">
+        <canvas id="intro-canvas"></canvas>
+        <div class="scan-line"></div>
+      </div>
       <div class="intro-text">
         <h1 class="intro-name">MR HRICK &amp; MR RTIYANA</h1>
         <p class="intro-tagline">INNOVATIVE DIGITAL CRAFTSMEN</p>
       </div>
     </div>
+
+    <!-- Logging Terminal Panel -->
+    <div id="loader-terminal">
+      <div class="terminal-header">
+        <span class="term-dot dot-1"></span>
+        <span class="term-dot dot-2"></span>
+        <span class="term-dot dot-3"></span>
+        <span class="term-title">NOVA_SYSTEM_SHELL // DECRYPTOR</span>
+      </div>
+      <div id="loader-log" class="terminal-body">
+        <!-- Logs dynamically typed here -->
+      </div>
+    </div>
+
     <div class="intro-progress-bar">
       <div class="intro-progress-fill"></div>
     </div>
@@ -102,58 +123,108 @@
             <div class="portal-ring ring-1"></div>
             <div class="portal-ring ring-2"></div>
             <div class="portal-ring ring-3"></div>
-            <svg class="laptop-mockup" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Screen border -->
-              <rect x="80" y="30" width="640" height="400" rx="16" fill="url(#metal-gradient)" stroke="#1a1a2e" stroke-width="6"/>
-              <rect x="90" y="40" width="620" height="380" rx="8" fill="#04040a" />
-              <!-- Keyboard Base -->
-              <path d="M40 430H760C780 430 790 445 780 455L750 480C745 485 730 485 720 485H80C70 485 55 485 50 480L20 455C10 445 20 430 40 430Z" fill="url(#keyboard-gradient)" />
-              <rect x="340" y="435" width="120" height="6" rx="3" fill="#1e1e38" />
-              <rect x="360" y="455" width="80" height="15" rx="2" fill="#0c0c16" />
-              <!-- Inner Screen Visual -->
-              <g class="screen-content">
-                <!-- Grid background -->
-                <path d="M 90 200 L 710 200 M 90 250 L 710 250 M 90 300 L 710 300" stroke="#1f1f3a" stroke-width="1" />
-                <path d="M 250 40 L 250 420 M 400 40 L 400 420 M 550 40 L 550 420" stroke="#1f1f3a" stroke-width="1" />
-                <!-- Web mockup cards -->
-                <rect x="120" y="70" width="150" height="90" rx="8" fill="url(#card-grad-1)" opacity="0.8" />
-                <rect x="290" y="70" width="390" height="90" rx="8" fill="url(#card-grad-2)" opacity="0.8" />
-                <rect x="120" y="180" width="330" height="210" rx="8" fill="url(#card-grad-3)" opacity="0.8" />
-                <rect x="470" y="180" width="210" height="95" rx="8" fill="url(#card-grad-2)" opacity="0.8" />
-                <rect x="470" y="295" width="210" height="95" rx="8" fill="url(#card-grad-1)" opacity="0.8" />
-                <!-- Cyber Lines -->
-                <path d="M 140 115 L 200 115 M 140 125 L 230 125 M 310 100 L 450 100 M 310 115 L 380 115" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-                <circle cx="210" cy="285" r="45" fill="none" stroke="url(#accent-gradient)" stroke-width="4" stroke-dasharray="10 5" class="rotating-svg"/>
-                <path d="M 500 220 L 580 220 M 500 235 L 550 235" stroke="#00f2fe" stroke-width="3" stroke-linecap="round"/>
-              </g>
-              <!-- Gradients -->
+            <svg class="laptop-mockup cyber-cyborg-svg" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <linearGradient id="metal-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#3d3d5c"/>
-                  <stop offset="50%" stop-color="#1e1e2f"/>
-                  <stop offset="100%" stop-color="#0c0c14"/>
-                </linearGradient>
-                <linearGradient id="keyboard-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stop-color="#282845"/>
-                  <stop offset="100%" stop-color="#0f0f1b"/>
-                </linearGradient>
-                <linearGradient id="card-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#7f00ff" stop-opacity="0.2"/>
+                <linearGradient id="portal-glow-1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.8"/>
+                  <stop offset="50%" stop-color="#7f00ff" stop-opacity="0.3"/>
                   <stop offset="100%" stop-color="#ff007f" stop-opacity="0.05"/>
                 </linearGradient>
-                <linearGradient id="card-grad-2" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#00f2fe" stop-opacity="0.2"/>
-                  <stop offset="100%" stop-color="#4facfe" stop-opacity="0.05"/>
-                </linearGradient>
-                <linearGradient id="card-grad-3" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#121224"/>
-                  <stop offset="100%" stop-color="#090912"/>
-                </linearGradient>
-                <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient id="avatar-glow" x1="0%" y1="0%" x2="0%" y2="100%">
                   <stop offset="0%" stop-color="#00f2fe"/>
-                  <stop offset="100%" stop-color="#7f00ff"/>
+                  <stop offset="60%" stop-color="#7f00ff"/>
+                  <stop offset="100%" stop-color="#ff007f"/>
                 </linearGradient>
+                <radialGradient id="nebula-glow" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#7f00ff" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+                </radialGradient>
               </defs>
+              <!-- Center nebula glow -->
+              <circle cx="400" cy="400" r="300" fill="url(#nebula-glow)" />
+              
+              <!-- Orbital Ring 1 (Dotted) -->
+              <circle cx="400" cy="400" r="260" stroke="#00f2fe" stroke-width="2.5" stroke-dasharray="12 24" class="orbit-anim-1" />
+              <!-- Orbital Ring 2 (Data sectors) -->
+              <circle cx="400" cy="400" r="220" stroke="#7f00ff" stroke-width="6" stroke-dasharray="60 30 10 30" class="orbit-anim-2" />
+              <!-- Orbital Ring 3 (Inner cyan lines) -->
+              <circle cx="400" cy="400" r="180" stroke="#ff007f" stroke-width="1.5" stroke-dasharray="40 10" class="orbit-anim-3" />
+
+              <!-- Cyber Portal Tunnel Lines radiating from center -->
+              <g opacity="0.25">
+                <line x1="400" y1="400" x2="400" y2="100" stroke="#00f2fe" stroke-width="1" />
+                <line x1="400" y1="400" x2="400" y2="700" stroke="#00f2fe" stroke-width="1" />
+                <line x1="400" y1="400" x2="100" y2="400" stroke="#00f2fe" stroke-width="1" />
+                <line x1="400" y1="400" x2="700" y2="400" stroke="#00f2fe" stroke-width="1" />
+                <line x1="400" y1="400" x2="187" y2="187" stroke="#7f00ff" stroke-width="1" />
+                <line x1="400" y1="400" x2="613" y2="613" stroke="#7f00ff" stroke-width="1" />
+                <line x1="400" y1="400" x2="613" y2="187" stroke="#ff007f" stroke-width="1" />
+                <line x1="400" y1="400" x2="187" y2="613" stroke="#ff007f" stroke-width="1" />
+              </g>
+
+              <!-- Central Humanoid Cyber Avatar Shape (Wireframe humanoid vector) -->
+              <g class="cyborg-group">
+                <!-- Avatar shadow glow -->
+                <path d="M400 220 C420 220 430 240 430 260 C430 290 410 310 400 320 C390 310 370 290 370 260 C370 240 380 220 400 220 Z M400 330 C450 330 480 370 490 440 L450 450 L440 540 L400 650 L360 540 L350 450 L310 440 C320 370 350 330 400 330 Z" fill="none" stroke="#00f2fe" stroke-width="6" opacity="0.3" filter="blur(8px)"/>
+                
+                <!-- Head/Brain -->
+                <circle cx="400" cy="260" r="28" fill="#06060c" stroke="url(#avatar-glow)" stroke-width="3" />
+                <circle cx="400" cy="260" r="12" fill="none" stroke="#39ff14" stroke-width="1.5" stroke-dasharray="2 2" />
+                
+                <!-- Neck -->
+                <path d="M 392 288 L 392 305 M 408 288 L 408 305" stroke="url(#avatar-glow)" stroke-width="2.5" />
+                <line x1="400" y1="288" x2="400" y2="305" stroke="#ff007f" stroke-width="1" />
+
+                <!-- Torso Wireframe -->
+                <path d="M 350 340 L 450 340 L 430 460 L 370 460 Z" fill="#040408" stroke="url(#avatar-glow)" stroke-width="3" />
+                <!-- Torso ribs/lines -->
+                <line x1="360" y1="370" x2="440" y2="370" stroke="#7f00ff" stroke-width="1.5" />
+                <line x1="365" y1="400" x2="435" y2="400" stroke="#00f2fe" stroke-width="1.5" />
+                <line x1="370" y1="430" x2="430" y2="430" stroke="#ff007f" stroke-width="1.5" />
+                <!-- Spine line -->
+                <line x1="400" y1="340" x2="400" y2="460" stroke="#39ff14" stroke-width="2" stroke-dasharray="4 2" />
+
+                <!-- Left Arm (Outstretched cybernetic) -->
+                <path d="M 345 342 L 280 370 L 220 360" fill="none" stroke="url(#avatar-glow)" stroke-width="3" stroke-linecap="round"/>
+                <!-- Arm nodes -->
+                <circle cx="280" cy="370" r="6" fill="#06060c" stroke="#ff007f" stroke-width="2" />
+                <circle cx="220" cy="360" r="4" fill="#00f2fe" />
+
+                <!-- Right Arm (Outstretched cybernetic) -->
+                <path d="M 455 342 L 520 370 L 580 360" fill="none" stroke="url(#avatar-glow)" stroke-width="3" stroke-linecap="round"/>
+                <circle cx="520" cy="370" r="6" fill="#06060c" stroke="#ff007f" stroke-width="2" />
+                <circle cx="580" cy="360" r="4" fill="#00f2fe" />
+
+                <!-- Pelvis -->
+                <path d="M 370 460 L 430 460 L 415 500 L 385 500 Z" fill="#040408" stroke="url(#avatar-glow)" stroke-width="3" />
+                
+                <!-- Left Leg -->
+                <path d="M 385 500 L 370 590 L 375 680" fill="none" stroke="url(#avatar-glow)" stroke-width="3" stroke-linecap="round" />
+                <circle cx="370" cy="590" r="6" fill="#06060c" stroke="#7f00ff" stroke-width="2" />
+                
+                <!-- Right Leg -->
+                <path d="M 415 500 L 430 590 L 425 680" fill="none" stroke="url(#avatar-glow)" stroke-width="3" stroke-linecap="round" />
+                <circle cx="430" cy="590" r="6" fill="#06060c" stroke="#7f00ff" stroke-width="2" />
+                
+                <!-- Glowing portal power core in chest -->
+                <circle cx="400" cy="370" r="12" fill="#06060c" stroke="#00f2fe" stroke-width="2" />
+                <circle cx="400" cy="370" r="6" fill="#39ff14" class="pulsing-core" />
+              </g>
+              
+              <!-- Floating cyber codes / cubes around head -->
+              <g opacity="0.8">
+                <rect x="230" y="240" width="40" height="20" rx="3" fill="#06060c" stroke="#00f2fe" stroke-width="1" />
+                <text x="250" y="254" fill="#00f2fe" font-family="monospace" font-size="9" font-weight="bold" text-anchor="middle">01</text>
+                
+                <rect x="530" y="220" width="45" height="20" rx="3" fill="#06060c" stroke="#ff007f" stroke-width="1" />
+                <text x="552" y="234" fill="#ff007f" font-family="monospace" font-size="9" font-weight="bold" text-anchor="middle">SYS</text>
+                
+                <circle cx="210" cy="480" r="14" fill="#06060c" stroke="#7f00ff" stroke-width="1" />
+                <text x="210" y="484" fill="#7f00ff" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">F</text>
+                
+                <circle cx="590" cy="480" r="14" fill="#06060c" stroke="#7f00ff" stroke-width="1" />
+                <text x="590" y="494" fill="#7f00ff" font-family="monospace" font-size="10" font-weight="bold" text-anchor="middle">U</text>
+              </g>
             </svg>
           </div>
         </div>

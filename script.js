@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const introCtx = introCanvas.getContext('2d');
   const progressFill = document.querySelector('.intro-progress-fill');
   const introText = document.querySelector('.intro-text');
+  const loaderLog = document.getElementById('loader-log');
 
   // Set canvas resolution
   function resizeIntroCanvas() {
@@ -60,21 +61,42 @@ document.addEventListener('DOMContentLoaded', () => {
   let introAnimationId = null;
   const introDuration = 6000; // 6 seconds total
 
+  // Logging sequence triggers
+  const logLines = [
+    { threshold: 0.05, text: "[SYS] BOOTING SYSTEM DECRYPTOR CORE v1.0.4...", color: "" },
+    { threshold: 0.22, text: "[NET] SYNCING REMOTE AGHORIII33/NOVA...", color: "cyan" },
+    { threshold: 0.45, text: "[DB] 6 PROJECT OBJECT SCHEMA RECORDS MAPPED...", color: "" },
+    { threshold: 0.65, text: "[VFX] COMPILING 3D RENDER GRAPHICS ENGINE...", color: "purple" },
+    { threshold: 0.80, text: "[AUTH] ADMIN AUTHORIZED: MR HRICK & MR RTIYANA...", color: "cyan" },
+    { threshold: 0.92, text: "[READY] SHUTTER TRIGGERED. LAUNCHING WORKSPACE...", color: "" }
+  ];
+  const writtenLogs = new Set();
+
+  function updateLoaderLogs(progress) {
+    logLines.forEach(log => {
+      if (progress >= log.threshold && !writtenLogs.has(log.text)) {
+        writtenLogs.add(log.text);
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        if (log.color) line.classList.add(log.color);
+        line.textContent = log.text;
+        loaderLog.appendChild(line);
+        loaderLog.scrollTop = loaderLog.scrollHeight;
+      }
+    });
+  }
+
   // Parametric geometry point generator
-  // Generates points on a path that matches specific geometries (Triangle, Square, Pentagon, Circle)
   function getShapePoints(sides, radius, cx, cy, totalPoints = 120) {
     const points = [];
     for (let i = 0; i < totalPoints; i++) {
       const angle = (i / totalPoints) * Math.PI * 2 - Math.PI / 2;
-      
       let r = radius;
       if (sides >= 3 && sides <= 10) {
-        // Analytical polar equation of a regular polygon
         const segment = Math.PI * 2 / sides;
         const term = (angle + Math.PI/2) % segment - segment / 2;
         r = radius * Math.cos(segment / 2) / Math.cos(term);
       }
-      
       points.push({
         x: cx + Math.cos(angle) * r,
         y: cy + Math.sin(angle) * r
@@ -116,18 +138,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const elapsed = timestamp - introStartTime;
     const progress = Math.min(elapsed / introDuration, 1);
     
-    // Update progress bar
+    // Update progress bar & logs
     progressFill.style.width = `${progress * 100}%`;
+    updateLoaderLogs(progress);
 
     introCtx.clearRect(0, 0, 300, 300);
     const cx = 150, cy = 150, baseRadius = 60;
-
-    // Phases definition:
-    // 0.0 - 0.25: Triangle to Square
-    // 0.25 - 0.50: Square to Pentagon
-    // 0.50 - 0.75: Pentagon to Circle
-    // 0.75 - 0.90: Circle spins and builds glow/intensity
-    // 0.90 - 1.0: Bursts into particles & Loader fades out
     
     let sidesA = 3, sidesB = 3;
     let morphFactor = 0;
@@ -140,12 +156,12 @@ document.addEventListener('DOMContentLoaded', () => {
       sidesA = 4; sidesB = 5;
       morphFactor = (progress - 0.25) / 0.25;
     } else if (progress < 0.75) {
-      sidesA = 5; sidesB = 100; // high side count approximates a circle
+      sidesA = 5; sidesB = 100;
       morphFactor = (progress - 0.50) / 0.25;
     } else if (progress < 0.90) {
       sidesA = 100; sidesB = 100;
       morphFactor = 0;
-      rotation = elapsed * 0.005; // speed up rotation
+      rotation = elapsed * 0.005;
     }
 
     const pointsA = getShapePoints(sidesA, baseRadius, cx, cy);
@@ -159,19 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
       currentPoints.push({ x, y });
     }
 
-    // Apply rotation about center
+    // Apply rotation
     introCtx.save();
     introCtx.translate(cx, cy);
     introCtx.rotate(rotation);
     introCtx.translate(-cx, -cy);
 
-    // Setup glowing paint styles
     introCtx.lineWidth = 3;
     let glowSize = 5;
     let strokeColor = '#00f2fe';
 
     if (progress >= 0.75 && progress < 0.90) {
-      // Climax intensity build-up
       const intensity = (progress - 0.75) / 0.15;
       glowSize = 5 + intensity * 20;
       strokeColor = `rgb(${Math.floor(intensity * 127)}, ${Math.floor(242 - intensity * 100)}, 254)`;
@@ -191,9 +205,8 @@ document.addEventListener('DOMContentLoaded', () => {
       introCtx.closePath();
       introCtx.stroke();
     } else {
-      // Climax: Burst into particles at 90% progress
+      // Climax burst
       if (explodingParticles.length === 0) {
-        // Trigger once
         const circlePoints = getShapePoints(100, baseRadius, cx, cy);
         circlePoints.forEach(p => {
           explodingParticles.push(new ExplodingParticle(p.x, p.y, '#00f2fe'));
@@ -204,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     introCtx.restore();
 
-    // Render explosion particles
     if (explodingParticles.length > 0) {
       explodingParticles.forEach(p => {
         p.update();
@@ -215,17 +227,14 @@ document.addEventListener('DOMContentLoaded', () => {
     if (progress < 1) {
       introAnimationId = requestAnimationFrame(drawIntro);
     } else {
-      // Fade out Loader
       setTimeout(() => {
         introOverlay.classList.add('fade-out');
         document.body.classList.remove('loading');
-        // Trigger skills progress bar reveal check immediately
         revealSkills();
       }, 1000);
     }
   }
 
-  // Start Intro loop
   requestAnimationFrame(drawIntro);
 
 
@@ -596,17 +605,28 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Re-map mouse interpolation coordinates to camera pitch and yaw targets
+  let breathTime = 0;
   function updateCamRotationPhysics() {
     updateMousePhysics();
+    breathTime += 0.012;
+    
+    // Smooth camera drift offset
+    const mxOffset = Math.sin(breathTime * 0.8) * 0.018;
+    const myOffset = Math.cos(breathTime * 0.6) * 0.012;
+
     if (state.mouse.x !== -1000) {
       const mx = (state.mouse.x / state.windowWidth) * 2 - 1;
       const my = (state.mouse.y / state.windowHeight) * 2 - 1;
 
-      targetCamYaw = mx * 0.16;   // Camera yaw range (radians)
-      targetCamPitch = my * -0.10; // Camera pitch range (radians)
+      targetCamYaw = mx * 0.16 + mxOffset;
+      targetCamPitch = my * -0.10 + myOffset;
+    } else {
+      // Natural camera breathing movement when mouse is off-screen
+      targetCamYaw = mxOffset;
+      targetCamPitch = myOffset;
     }
-    camYaw += (targetCamYaw - camYaw) * 0.06;
-    camPitch += (targetCamPitch - camPitch) * 0.06;
+    camYaw += (targetCamYaw - camYaw) * 0.05;
+    camPitch += (targetCamPitch - camPitch) * 0.05;
   }
 
   // Unified VFX Render loop
