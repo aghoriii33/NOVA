@@ -805,11 +805,11 @@
         <form id="signin-form" class="auth-form">
           <div class="auth-form-group">
             <label for="signin-email">Email Address</label>
-            <input type="email" id="signin-email" required placeholder="name@domain.com">
+            <input type="email" id="signin-email" required placeholder="name@domain.com" autocomplete="email">
           </div>
           <div class="auth-form-group">
             <label for="signin-password">Password</label>
-            <input type="password" id="signin-password" required placeholder="••••••••">
+            <input type="password" id="signin-password" required placeholder="••••••••" autocomplete="current-password">
           </div>
           <button type="submit" class="btn btn-primary btn-block">Sign In</button>
         </form>
@@ -818,15 +818,15 @@
         <form id="signup-form" class="auth-form" style="display: none;">
           <div class="auth-form-group">
             <label for="signup-name">Display Name</label>
-            <input type="text" id="signup-name" required placeholder="Altaïr">
+            <input type="text" id="signup-name" required placeholder="Altaïr" autocomplete="name">
           </div>
           <div class="auth-form-group">
             <label for="signup-email">Email Address</label>
-            <input type="email" id="signup-email" required placeholder="name@domain.com">
+            <input type="email" id="signup-email" required placeholder="name@domain.com" autocomplete="email">
           </div>
           <div class="auth-form-group">
             <label for="signup-password">Password</label>
-            <input type="password" id="signup-password" required placeholder="••••••••">
+            <input type="password" id="signup-password" required placeholder="••••••••" autocomplete="new-password">
           </div>
           <button type="submit" class="btn btn-primary btn-block">Create Account</button>
         </form>

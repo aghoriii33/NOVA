@@ -1990,14 +1990,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return true;
   }
 
-  // Open Modal
+  // Open Modal — always open, Firebase check only happens on submit
   if (authLoginBtn) {
     authLoginBtn.addEventListener('click', () => {
       clearAuthMessage();
       if (authModal) {
         authModal.classList.add('open');
       }
-      document.body.style.overflow = 'hidden'; // Lock scrolling
+      document.body.style.overflow = 'hidden';
+
+      // If Firebase isn't configured, show a friendly notice inside the modal
+      if (!isFirebaseConfigured) {
+        setTimeout(() => {
+          showAuthMessage("⚠️ Firebase not configured. Paste your firebaseConfig into script.js to enable login.", "error");
+        }, 100);
+      }
     });
   }
 

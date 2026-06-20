@@ -2245,7 +2245,9 @@ h1, h2, h3, h4 {
 
 .auth-message.error {
   display: block;
-  color: var(--color-accent);
+  color: #e8b84b;
+  font-size: 0.82rem;
+  line-height: 1.5;
 }
 
 /* Button overrides for Auth */
