@@ -49,6 +49,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressFill = document.querySelector('.intro-progress-fill');
   const introText = document.querySelector('.intro-text');
   const loaderLog = document.getElementById('loader-log');
+  
+  // Telemetry indicators
+  const teleSync = document.getElementById('tele-sync');
+  const teleLatency = document.getElementById('tele-latency');
+  const teleSpeed = document.getElementById('tele-speed');
+  const teleLoad = document.getElementById('tele-load');
 
   // Set canvas resolution
   function resizeIntroCanvas() {
@@ -71,8 +77,22 @@ document.addEventListener('DOMContentLoaded', () => {
     { threshold: 0.92, text: "[READY] SHUTTER TRIGGERED. LAUNCHING WORKSPACE...", color: "" }
   ];
   const writtenLogs = new Set();
+  let lastMicroLogTime = 0;
+  const microLogs = [
+    "[CORE] Fetching instruction cache...",
+    "[CORE] Validating security tokens...",
+    "[NET] Checking websocket latency...",
+    "[NET] Handshake request transmitted...",
+    "[VFX] Creating perspective matrices...",
+    "[VFX] Allocation: 2000 particle vertices...",
+    "[DB] Restructuring collection layout...",
+    "[SYS] Thread pool scaling initialized...",
+    "[SYS] Setting graphics projection FOV...",
+    "[NET] Connection established to remote index..."
+  ];
 
-  function updateLoaderLogs(progress) {
+  function updateLoaderLogs(progress, timestamp) {
+    // Principal logs
     logLines.forEach(log => {
       if (progress >= log.threshold && !writtenLogs.has(log.text)) {
         writtenLogs.add(log.text);
@@ -84,47 +104,250 @@ document.addEventListener('DOMContentLoaded', () => {
         loaderLog.scrollTop = loaderLog.scrollHeight;
       }
     });
-  }
 
-  // Parametric geometry point generator
-  function getShapePoints(sides, radius, cx, cy, totalPoints = 120) {
-    const points = [];
-    for (let i = 0; i < totalPoints; i++) {
-      const angle = (i / totalPoints) * Math.PI * 2 - Math.PI / 2;
-      let r = radius;
-      if (sides >= 3 && sides <= 10) {
-        const segment = Math.PI * 2 / sides;
-        const term = (angle + Math.PI/2) % segment - segment / 2;
-        r = radius * Math.cos(segment / 2) / Math.cos(term);
-      }
-      points.push({
-        x: cx + Math.cos(angle) * r,
-        y: cy + Math.sin(angle) * r
-      });
+    // Random minor log scrolling
+    if (timestamp - lastMicroLogTime > 350 && Math.random() < 0.75 && progress < 0.92) {
+      lastMicroLogTime = timestamp;
+      const text = microLogs[Math.floor(Math.random() * microLogs.length)];
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.style.opacity = 0.5;
+      line.style.fontSize = '0.72rem';
+      line.textContent = text;
+      loaderLog.appendChild(line);
+      loaderLog.scrollTop = loaderLog.scrollHeight;
     }
-    return points;
   }
 
-  // Particle burst class for intro climax
+  function updateTelemetry(progress) {
+    if (teleSync) teleSync.textContent = `${Math.floor(progress * 100)}%`;
+    if (teleLatency) {
+      const lat = Math.floor(99 - progress * 95) + Math.floor(Math.sin(Date.now() * 0.01) * 3 + 4);
+      teleLatency.textContent = `${Math.max(4, lat)}ms`;
+    }
+    if (teleSpeed) teleSpeed.textContent = `${(progress * 0.99).toFixed(2)}c`;
+    if (teleLoad) teleLoad.textContent = `${(progress * 100).toFixed(2)}%`;
+  }
+
+  // Draw Cyborg wireframe
+  function drawCyborgWireframe(ctx, cx, cy, progress, timestamp) {
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
+    ctx.lineWidth = 1.5;
+    
+    // Head
+    ctx.beginPath();
+    ctx.arc(150, 85, 16, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    // Brain grid
+    ctx.beginPath();
+    ctx.moveTo(150, 69); ctx.lineTo(150, 101);
+    ctx.moveTo(134, 85); ctx.lineTo(166, 85);
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.15)';
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
+    
+    // Neck
+    ctx.beginPath();
+    ctx.moveTo(147, 101); ctx.lineTo(147, 115);
+    ctx.moveTo(153, 101); ctx.lineTo(153, 115);
+    ctx.stroke();
+    
+    // Shoulders
+    ctx.beginPath();
+    ctx.moveTo(115, 120); ctx.lineTo(185, 120);
+    ctx.stroke();
+    
+    // Torso/Chest
+    ctx.beginPath();
+    ctx.moveTo(120, 120);
+    ctx.lineTo(180, 120);
+    ctx.lineTo(168, 170);
+    ctx.lineTo(132, 170);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Spine
+    ctx.beginPath();
+    ctx.moveTo(150, 120);
+    ctx.lineTo(150, 190);
+    ctx.strokeStyle = 'rgba(57, 255, 20, 0.5)';
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
+    
+    // Arms
+    ctx.beginPath();
+    ctx.moveTo(120, 120);
+    ctx.lineTo(95, 145);
+    ctx.lineTo(80, 175);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(180, 120);
+    ctx.lineTo(205, 145);
+    ctx.lineTo(220, 175);
+    ctx.stroke();
+    
+    // Pelvis
+    ctx.beginPath();
+    ctx.moveTo(132, 170);
+    ctx.lineTo(168, 170);
+    ctx.lineTo(160, 192);
+    ctx.lineTo(140, 192);
+    ctx.closePath();
+    ctx.stroke();
+    
+    // Legs
+    ctx.beginPath();
+    ctx.moveTo(140, 192);
+    ctx.lineTo(132, 235);
+    ctx.lineTo(125, 275);
+    ctx.stroke();
+    
+    ctx.beginPath();
+    ctx.moveTo(160, 192);
+    ctx.lineTo(168, 235);
+    ctx.lineTo(175, 275);
+    ctx.stroke();
+    
+    // Pulsing core nodes
+    const pulseFactor = 0.5 + Math.sin(timestamp * 0.008) * 0.5;
+    ctx.fillStyle = `rgba(57, 255, 20, ${0.4 + pulseFactor * 0.6})`;
+    
+    const nodes = [
+      {x: 150, y: 140, r: 5}, // Heart core
+      {x: 150, y: 85, r: 3},  // Brain center
+      {x: 120, y: 120, r: 2}, // L Shoulder
+      {x: 180, y: 120, r: 2}, // R Shoulder
+      {x: 95, y: 145, r: 2},  // L Elbow
+      {x: 205, y: 145, r: 2}, // R Elbow
+      {x: 140, y: 192, r: 2}, // L Hip
+      {x: 160, y: 192, r: 2}, // R Hip
+      {x: 132, y: 235, r: 2}, // L Knee
+      {x: 168, y: 235, r: 2}  // R Knee
+    ];
+    
+    nodes.forEach(node => {
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    
+    ctx.restore();
+  }
+
+  // Draw HUD circle animations
+  function drawHUDGauges(ctx, cx, cy, progress, timestamp) {
+    ctx.save();
+    
+    // Outer dashed ring
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 120, 0, Math.PI * 2);
+    ctx.stroke();
+    
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(timestamp * 0.0003);
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([12, 24, 4, 8]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 114, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Inner magenta dash ring
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(-timestamp * 0.0005);
+    ctx.strokeStyle = 'rgba(255, 0, 127, 0.3)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath();
+    ctx.arc(0, 0, 100, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    // Cyan progress arc
+    ctx.strokeStyle = '#00f2fe';
+    ctx.lineWidth = 3;
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = '#00f2fe';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 100, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+    ctx.stroke();
+
+    // Micro grid lines
+    ctx.strokeStyle = 'rgba(0, 242, 254, 0.08)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(cx - 130, cy); ctx.lineTo(cx + 130, cy);
+    ctx.moveTo(cx, cy - 130); ctx.lineTo(cx, cy + 130);
+    ctx.stroke();
+    
+    // Angle markers
+    ctx.fillStyle = 'rgba(0, 242, 254, 0.3)';
+    ctx.font = '8px monospace';
+    ctx.fillText("00", cx - 4, cy - 124);
+    ctx.fillText("50", cx + 124, cy + 3);
+    ctx.fillText("00", cx - 4, cy + 128);
+    ctx.fillText("25", cx - 134, cy + 3);
+    
+    ctx.restore();
+  }
+
+  // Draw scanning laser beam
+  function drawScanningBeam(ctx, w, h, timestamp) {
+    ctx.save();
+    const beamY = 70 + (Math.sin(timestamp * 0.0018) * 0.5 + 0.5) * 200; // sweeps between 70 and 270
+    
+    // Laser sweep glow
+    const grad = ctx.createLinearGradient(0, beamY - 12, 0, beamY + 3);
+    grad.addColorStop(0, 'rgba(57, 255, 20, 0)');
+    grad.addColorStop(0.5, 'rgba(57, 255, 20, 0.12)');
+    grad.addColorStop(1, 'rgba(57, 255, 20, 0.35)');
+    
+    ctx.fillStyle = grad;
+    ctx.fillRect(35, beamY - 12, w - 70, 12);
+    
+    // Core beam line
+    ctx.strokeStyle = '#39ff14';
+    ctx.lineWidth = 2;
+    ctx.shadowBlur = 6;
+    ctx.shadowColor = '#39ff14';
+    ctx.beginPath();
+    ctx.moveTo(35, beamY);
+    ctx.lineTo(w - 70, beamY);
+    ctx.stroke();
+    
+    ctx.restore();
+  }
+
+  // Climax burst particles
   class ExplodingParticle {
     constructor(x, y, color) {
       this.x = x;
       this.y = y;
-      this.vx = (Math.random() - 0.5) * 8;
-      this.vy = (Math.random() - 0.5) * 8;
+      this.vx = (Math.random() - 0.5) * 10;
+      this.vy = (Math.random() - 0.5) * 10;
       this.alpha = 1;
-      this.size = Math.random() * 3 + 1;
+      this.size = Math.random() * 4 + 1.5;
       this.color = color;
     }
     update() {
       this.x += this.vx;
       this.y += this.vy;
-      this.alpha -= 0.02;
+      this.alpha -= 0.025;
     }
     draw(ctx) {
       ctx.save();
       ctx.globalAlpha = Math.max(0, this.alpha);
       ctx.fillStyle = this.color;
+      ctx.shadowBlur = 8;
+      ctx.shadowColor = this.color;
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
       ctx.fill();
@@ -138,84 +361,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const elapsed = timestamp - introStartTime;
     const progress = Math.min(elapsed / introDuration, 1);
     
-    // Update progress bar & logs
+    // Update progress elements
     progressFill.style.width = `${progress * 100}%`;
-    updateLoaderLogs(progress);
+    updateLoaderLogs(progress, timestamp);
+    updateTelemetry(progress);
 
     introCtx.clearRect(0, 0, 300, 300);
-    const cx = 150, cy = 150, baseRadius = 60;
+    const cx = 150, cy = 150;
     
-    let sidesA = 3, sidesB = 3;
-    let morphFactor = 0;
-    let rotation = elapsed * 0.001;
-
-    if (progress < 0.25) {
-      sidesA = 3; sidesB = 4;
-      morphFactor = progress / 0.25;
-    } else if (progress < 0.50) {
-      sidesA = 4; sidesB = 5;
-      morphFactor = (progress - 0.25) / 0.25;
-    } else if (progress < 0.75) {
-      sidesA = 5; sidesB = 100;
-      morphFactor = (progress - 0.50) / 0.25;
-    } else if (progress < 0.90) {
-      sidesA = 100; sidesB = 100;
-      morphFactor = 0;
-      rotation = elapsed * 0.005;
-    }
-
-    const pointsA = getShapePoints(sidesA, baseRadius, cx, cy);
-    const pointsB = getShapePoints(sidesB, baseRadius, cx, cy);
-
-    // Interpolate points
-    const currentPoints = [];
-    for (let i = 0; i < pointsA.length; i++) {
-      const x = pointsA[i].x + (pointsB[i].x - pointsA[i].x) * morphFactor;
-      const y = pointsA[i].y + (pointsB[i].y - pointsA[i].y) * morphFactor;
-      currentPoints.push({ x, y });
-    }
-
-    // Apply rotation
-    introCtx.save();
-    introCtx.translate(cx, cy);
-    introCtx.rotate(rotation);
-    introCtx.translate(-cx, -cy);
-
-    introCtx.lineWidth = 3;
-    let glowSize = 5;
-    let strokeColor = '#00f2fe';
-
-    if (progress >= 0.75 && progress < 0.90) {
-      const intensity = (progress - 0.75) / 0.15;
-      glowSize = 5 + intensity * 20;
-      strokeColor = `rgb(${Math.floor(intensity * 127)}, ${Math.floor(242 - intensity * 100)}, 254)`;
-    }
-
-    introCtx.shadowBlur = glowSize;
-    introCtx.shadowColor = strokeColor;
-    introCtx.strokeStyle = strokeColor;
-
-    // Draw Shape
-    if (progress < 0.90) {
-      introCtx.beginPath();
-      introCtx.moveTo(currentPoints[0].x, currentPoints[0].y);
-      for (let i = 1; i < currentPoints.length; i++) {
-        introCtx.lineTo(currentPoints[i].x, currentPoints[i].y);
-      }
-      introCtx.closePath();
-      introCtx.stroke();
+    if (progress < 0.94) {
+      // 1. Draw concentric HUD rings
+      drawHUDGauges(introCtx, cx, cy, progress, timestamp);
+      
+      // 2. Draw internal cyborg wireframe
+      drawCyborgWireframe(introCtx, cx, cy, progress, timestamp);
+      
+      // 3. Draw green scanning sweep laser
+      drawScanningBeam(introCtx, 300, 300, timestamp);
     } else {
-      // Climax burst
+      // Climax burst when loader hits ~94%
       if (explodingParticles.length === 0) {
-        const circlePoints = getShapePoints(100, baseRadius, cx, cy);
-        circlePoints.forEach(p => {
-          explodingParticles.push(new ExplodingParticle(p.x, p.y, '#00f2fe'));
-          explodingParticles.push(new ExplodingParticle(p.x, p.y, '#7f00ff'));
-        });
+        for (let a = 0; a < Math.PI * 2; a += 0.08) {
+          const r = 100;
+          const px = cx + Math.cos(a) * r;
+          const py = cy + Math.sin(a) * r;
+          explodingParticles.push(new ExplodingParticle(px, py, '#00f2fe'));
+          explodingParticles.push(new ExplodingParticle(px, py, '#ff007f'));
+          explodingParticles.push(new ExplodingParticle(px, py, '#39ff14'));
+        }
         introText.classList.add('reveal');
       }
     }
-    introCtx.restore();
 
     if (explodingParticles.length > 0) {
       explodingParticles.forEach(p => {
@@ -231,7 +407,7 @@ document.addEventListener('DOMContentLoaded', () => {
         introOverlay.classList.add('fade-out');
         document.body.classList.remove('loading');
         revealSkills();
-      }, 1000);
+      }, 800);
     }
   }
 
@@ -302,16 +478,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     draw(ctx, width, height, cp, cy) {
-      const segments = 80;
+      const segments = 120;
       ctx.save();
       ctx.strokeStyle = this.color;
-      ctx.lineWidth = 2.2;
-      ctx.shadowBlur = 12;
+      ctx.lineWidth = 1.8;
+      ctx.shadowBlur = 10;
       ctx.shadowColor = this.color;
-      if (this.isDashed) {
-        ctx.setLineDash([6, 14]);
-      }
       
+      // Draw outer circle
       ctx.beginPath();
       let first = true;
       for (let i = 0; i <= segments; i++) {
@@ -323,10 +497,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Rotate local points around X, Y, Z
         let y1 = ly * Math.cos(this.rx) - lz * Math.sin(this.rx);
         let z1 = ly * Math.sin(this.rx) + lz * Math.cos(this.rx);
-        
         let x2 = lx * Math.cos(this.ry) - z1 * Math.sin(this.ry);
         let z2 = lx * Math.sin(this.ry) + z1 * Math.cos(this.ry);
-        
         let x3 = x2 * Math.cos(this.rz) - y1 * Math.sin(this.rz);
         let y3 = x2 * Math.sin(this.rz) + y1 * Math.cos(this.rz);
 
@@ -341,6 +513,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       ctx.stroke();
+
+      // If dashed (like the middle ring in the image), also draw radial tick indicators
+      if (this.isDashed) {
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 1;
+        ctx.shadowBlur = 4;
+        
+        for (let i = 0; i < 36; i++) {
+          const angle = (i / 36) * Math.PI * 2;
+          const r1 = this.radius - 8;
+          const r2 = this.radius + 8;
+          
+          const x_start = r1 * Math.cos(angle);
+          const y_start = r1 * Math.sin(angle);
+          const x_end = r2 * Math.cos(angle);
+          const y_end = r2 * Math.sin(angle);
+
+          // Rotate local points function
+          const rotPt = (lx, ly) => {
+            let y1 = ly * Math.cos(this.rx);
+            let z1 = ly * Math.sin(this.rx);
+            let x2 = lx * Math.cos(this.ry) - z1 * Math.sin(this.ry);
+            let z2 = lx * Math.sin(this.ry) + z1 * Math.cos(this.ry);
+            let x3 = x2 * Math.cos(this.rz) - y1 * Math.sin(this.rz);
+            let y3 = x2 * Math.sin(this.rz) + y1 * Math.cos(this.rz);
+            return { x: x3, y: y3, z: z2 };
+          };
+
+          const p1 = rotPt(x_start, y_start);
+          const p2 = rotPt(x_end, y_end);
+
+          const s1 = project3D(p1.x, p1.y, p1.z + this.centerZ, width, height, cp, cy);
+          const s2 = project3D(p2.x, p2.y, p2.z + this.centerZ, width, height, cp, cy);
+
+          if (s1 && s2) {
+            ctx.beginPath();
+            ctx.moveTo(s1.x, s1.y);
+            ctx.lineTo(s2.x, s2.y);
+            ctx.stroke();
+          }
+        }
+      }
       ctx.restore();
     }
   }
@@ -534,16 +748,17 @@ document.addEventListener('DOMContentLoaded', () => {
       this.z = Math.random() * 1000;
     }
     reset() {
-      this.x = (Math.random() - 0.5) * 1400;
+      // Cluster stream coordinates left and right to framing channels
+      this.x = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 250 + 280);
       this.y = -600;
       this.z = Math.random() * 600 + 400;
-      this.speed = Math.random() * 3 + 1.5;
+      this.speed = Math.random() * 4 + 2;
       this.chars = [];
-      const len = Math.floor(Math.random() * 10 + 6);
+      const len = Math.floor(Math.random() * 12 + 8);
       for (let i = 0; i < len; i++) {
         this.chars.push(Math.random() > 0.5 ? '1' : '0');
       }
-      this.color = Math.random() > 0.6 ? 'hsla(182, 100%, 50%, 0.12)' : 'hsla(272, 100%, 60%, 0.12)';
+      this.color = Math.random() > 0.65 ? 'hsla(182, 100%, 50%, 0.16)' : 'hsla(272, 100%, 65%, 0.16)';
     }
     update() {
       this.y += this.speed;
@@ -557,9 +772,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const charY = currentY - (i * 20);
         const pt = project3D(this.x, charY, this.z, width, height, cp, cy);
         if (pt) {
-          const fontSize = Math.max(5, pt.scale * 0.045);
+          const fontSize = Math.max(6, pt.scale * 0.05);
           ctx.save();
-          let alpha = (1 - this.z / 1000) * 0.45 * (1 - i / this.chars.length);
+          let alpha = (1 - this.z / 1000) * 0.5 * (1 - i / this.chars.length);
           ctx.globalAlpha = Math.max(0, alpha);
           ctx.fillStyle = this.color;
           ctx.font = `bold ${fontSize}px monospace`;
@@ -571,36 +786,53 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const codeStreams = [];
-  const totalStreams = 20;
+  const totalStreams = 35; // Increased code stream density
   for (let i = 0; i < totalStreams; i++) {
     codeStreams.push(new CodeStream3D());
   }
 
-  // Gradient Nebula backdrop base
-  function drawNebulaBackdrop(ctx, width, height) {
-    ctx.fillStyle = '#05050a';
+  // Dynamic Backdrop Nebulas shifting over time
+  function drawNebulaBackdrop(ctx, width, height, timestamp) {
+    ctx.fillStyle = '#020205';
     ctx.fillRect(0, 0, width, height);
 
-    // Cyan portal aura
+    const time = timestamp ? timestamp * 0.00008 : 0;
+    const dx1 = Math.sin(time) * 45;
+    const dy1 = Math.cos(time * 0.85) * 35;
+    const dx2 = Math.cos(time * 1.15) * 55;
+    const dy2 = Math.sin(time * 0.72) * 45;
+
+    // Cyan core portal aura
     const grad1 = ctx.createRadialGradient(
-      width / 2, height / 2, 20,
-      width / 2, height / 2, Math.max(width, height) * 0.55
+      width / 2 + dx1, height / 2 + dy1, 10,
+      width / 2 + dx1, height / 2 + dy1, Math.max(width, height) * 0.52
     );
-    grad1.addColorStop(0, 'rgba(0, 242, 254, 0.06)');
-    grad1.addColorStop(0.4, 'rgba(0, 242, 254, 0.015)');
+    grad1.addColorStop(0, 'rgba(0, 242, 254, 0.08)');
+    grad1.addColorStop(0.5, 'rgba(0, 242, 254, 0.02)');
     grad1.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = grad1;
     ctx.fillRect(0, 0, width, height);
 
     // Purple nebula clouds
     const grad2 = ctx.createRadialGradient(
-      width * 0.75, height * 0.3, 10,
-      width * 0.75, height * 0.3, Math.max(width, height) * 0.65
+      width * 0.72 + dx2, height * 0.35 + dy2, 10,
+      width * 0.72 + dx2, height * 0.35 + dy2, Math.max(width, height) * 0.62
     );
-    grad2.addColorStop(0, 'rgba(127, 0, 255, 0.05)');
-    grad2.addColorStop(0.5, 'rgba(127, 0, 255, 0.01)');
+    grad2.addColorStop(0, 'rgba(127, 0, 255, 0.07)');
+    grad2.addColorStop(0.5, 'rgba(127, 0, 255, 0.015)');
     grad2.addColorStop(1, 'rgba(0, 0, 0, 0)');
     ctx.fillStyle = grad2;
+    ctx.fillRect(0, 0, width, height);
+
+    // Magenta outer nebulas
+    const grad3 = ctx.createRadialGradient(
+      width * 0.28 - dx2, height * 0.62 - dy2, 10,
+      width * 0.28 - dx2, height * 0.62 - dy2, Math.max(width, height) * 0.58
+    );
+    grad3.addColorStop(0, 'rgba(255, 0, 127, 0.06)');
+    grad3.addColorStop(0.5, 'rgba(255, 0, 127, 0.012)');
+    grad3.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    ctx.fillStyle = grad3;
     ctx.fillRect(0, 0, width, height);
   }
 
@@ -635,7 +867,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const h = vfxCanvas.height;
 
     // 1. Draw Static Backdrop Nebulas
-    drawNebulaBackdrop(vfxCtx, w, h);
+    drawNebulaBackdrop(vfxCtx, w, h, performance.now());
 
     // 2. Interpolate Camera Rotation based on Mouse
     updateCamRotationPhysics();
